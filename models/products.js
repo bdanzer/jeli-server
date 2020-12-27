@@ -7,7 +7,6 @@ const productSchema = new mongoose.Schema(
         carbs: { type: Number, required: true },
         fat: { type: Number, required: true },
         protein: { type: Number, required: true },
-        foodType: { type: String, required: true },
         dietType: { type: String },
         measurementType: { type: String, required: true },
         name: { type: String, required: true },
