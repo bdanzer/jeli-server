@@ -7,26 +7,17 @@ const router = Router();
 
 const mockFile = "nutrition/products";
 
-router.route("/test").post(async (req, res, next) => {
+router.route("/").get(async (req, res, next) => {
     try {
-        const product = req.context.models.Product(req.body);
-        await product.save();
-        res.send(product);
+        const product = req.context.models.Product;
+        const products = await product.find({});
+        res.send({ success: true, data: products });
     } catch (e) {
         res.send({
             success: false,
             errors: e.stack,
         });
     }
-});
-
-router.route("/").get((req, res, next) => {
-    const products = readMockFile(mockFile);
-
-    res.status(200).json({
-        status: "success",
-        data: products,
-    });
 });
 
 // "userId": 1,
@@ -41,6 +32,7 @@ router.route("/product").post(async (req, res, next) => {
         await product.save();
         res.send({ success: true, data: product });
     } catch (e) {
+        console.log("errors", e.errors.name);
         res.send({
             success: false,
             errors: e.stack,

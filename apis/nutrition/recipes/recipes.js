@@ -7,13 +7,17 @@ const router = Router();
 
 const mockFile = "nutrition/recipes";
 
-router.route("/").get((req, res, next) => {
-    const recipes = readMockFile(mockFile);
-
-    res.status(200).json({
-        status: "success",
-        data: recipes,
-    });
+router.route("/").get(async (req, res, next) => {
+    try {
+        const recipe = req.context.models.Recipe;
+        const recipes = await recipe.find({});
+        res.send({ success: true, data: recipes });
+    } catch (e) {
+        res.send({
+            success: false,
+            errors: e.stack,
+        });
+    }
 });
 
 // "userId": 1,
@@ -28,6 +32,7 @@ router.route("/recipe").post(async (req, res, next) => {
         await recipe.save();
         res.send({ success: true, data: recipe });
     } catch (e) {
+        console.log("errors", e);
         res.send({
             success: false,
             errors: e.stack,

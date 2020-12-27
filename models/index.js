@@ -17,7 +17,7 @@ dbConnect = {
     stag: `mongodb+srv://bdanzer:${dbPass}@jeli.zxqj5.mongodb.net/${dbName}`,
 };
 
-const env = "stag";
+const env = "dev";
 
 console.log(dbConnect);
 
