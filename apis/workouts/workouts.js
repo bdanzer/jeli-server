@@ -10,7 +10,7 @@ const mockFile = "workouts";
 router.route("/").get(async (req, res, next) => {
     try {
         const workout = req.context.models.Workout;
-        const workouts = await workout.find({});
+        const workouts = await workout.find({}).populate("exercises");
         res.send({ success: true, data: workouts });
     } catch (e) {
         res.send({

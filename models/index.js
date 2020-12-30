@@ -7,6 +7,7 @@ const Exercise = require("./exercise");
 const Workout = require("./workouts");
 const Log = require("./logs");
 const Program = require("./programs");
+const NutritionLog = require("./nutritionLogs");
 
 let dbConnect;
 const dbName = "jeli";
@@ -31,6 +32,7 @@ const models = {
     Workout,
     Log,
     Program,
+    NutritionLog
 };
 
 module.exports = { connectDb, models };

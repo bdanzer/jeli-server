@@ -85,24 +85,19 @@ router.route("/search").post(async (req, res, next) => {
     }
 });
 
-router.route("/exercise/:exerciseId").delete((req, res, next) => {
+router.route("/exercise/:exerciseId").delete(async (req, res, next) => {
     const { exerciseId } = req.params;
 
-    const exercisesJSON = readMockFile(mockFile);
-
-    const foundExerciseIndex = exercisesJSON.findIndex(
-        (exercise) => exercise.exerciseId === exerciseId
-    );
-
-    //removeIndexOfFound
-    exercisesJSON.splice(foundExerciseIndex, 1);
-
-    writeMockFile(mockFile, exercisesJSON);
-
-    res.status(200).json({
-        status: "success",
-        data: exercisesJSON,
-    });
+    try {
+        const exercise = req.context.models.Exercise;
+        const exerciseDeleted = await exercise.deleteOne({ _id: exerciseId });
+        res.send({ success: true, data: exerciseDeleted });
+    } catch (e) {
+        res.send({
+            success: false,
+            errors: e.stack,
+        });
+    }
 });
 
 module.exports = router;

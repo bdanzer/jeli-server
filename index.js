@@ -17,6 +17,7 @@ const sessions = require("./apis/sessions/sessions");
 const users = require("./apis/users/users");
 const workouts = require("./apis/workouts/workouts");
 const products = require("./apis/nutrition/products/products");
+const nutritionLog = require("./apis/nutrition/nutritionLogs/nutritionLogs");
 const recipes = require("./apis/nutrition/recipes/recipes");
 const auth = require("./apis/auth/auth");
 
@@ -44,6 +45,7 @@ app.use("/api/logs", logs);
 app.use("/api/programs", programs);
 app.use("/api/sessions", sessions);
 app.use("/api/users", users);
+app.use("/api/nutrition/logs", nutritionLog);
 app.use("/api/products", products);
 app.use("/api/recipes", recipes);
 app.use("/api/workouts", workouts);

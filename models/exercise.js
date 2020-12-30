@@ -19,12 +19,12 @@ const mongoose = require("mongoose");
 
 const exerciseSchema = new mongoose.Schema(
     {
-        name: { type: String, required: true },
-        description: { type: String, required: true },
+        exerciseName: { type: String, required: true },
+        exerciseDescription: { type: String, required: true },
         exerciseType: { type: String, required: true },
         equipmentType: { type: String, required: true },
-        mechanicsType: { type: String, required: true },
-        isPublic: { type: Boolean, required: true },
+        mechanicType: { type: String, required: true },
+        isExercisePublic: { type: Boolean, required: true },
         muscleGroups: { type: Array, required: true },
         muscles: { type: Array, required: true },
         instructions: { type: Array },
