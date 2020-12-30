@@ -7,7 +7,12 @@ const router = Router();
 router.route("/").get(async (req, res, next) => {
     try {
         const nutritionLog = req.context.models.NutritionLog;
-        const nutritionLogs = await nutritionLog.find({}).populate("meal1.data");
+        const nutritionLogs = await nutritionLog.find({ //query today up to tonight
+            createdAt: {
+                $gte: new Date(2020, 11, 29), 
+                $lt: new Date(2020, 11, 31)
+            }
+        }).populate("meal1.data");
         res.send({ success: true, data: nutritionLogs });
     } catch (e) {
         res.send({
