@@ -5,14 +5,27 @@ const moment = require("moment");
 const router = Router();
 
 router.route("/").get(async (req, res, next) => {
+    const {dateFrom, dateTo} = req.query;
+
     try {
         const nutritionLog = req.context.models.NutritionLog;
-        const nutritionLogs = await nutritionLog.find({ //query today up to tonight
+        const nutritionLogs = await nutritionLog.findOne({ //query today up to tonight
             createdAt: {
-                $gte: new Date(2020, 11, 29), 
-                $lt: new Date(2020, 11, 31)
+                $gte: new Date(dateFrom), 
+                $lt: new Date(dateTo)
             }
-        }).populate("meal1.data");
+        })
+            .populate("meal1.data.product")
+            .populate("meal2.data.product")
+            .populate("meal3.data.product")
+            .populate("snack1.data.product")
+            .populate("snack2.data.product")
+            .populate("snack3.data.product");
+
+        if (!nutritionLogs) {
+            res.send({ success: false, reason: 'NO_POSTS_FOUND', errors: null });
+        }
+
         res.send({ success: true, data: nutritionLogs });
     } catch (e) {
         res.send({
@@ -24,9 +37,19 @@ router.route("/").get(async (req, res, next) => {
 
 router.route("/log").post(async (req, res, next) => {
     try {
-        const nutritionLog = req.context.models.NutritionLog(req.body);
-        await nutritionLog.save();
-        res.send({ success: true, data: nutritionLog });
+        const query = { _id: req.body._id };
+        const update = req.body;
+        const options = { upsert: true, new: true, setDefaultsOnInsert: true };
+
+        const result = await req.context.models.NutritionLog.findOneAndUpdate(query, update, options)
+            .populate("meal1.data.product")
+            .populate("meal2.data.product")
+            .populate("meal3.data.product")
+            .populate("snack1.data.product")
+            .populate("snack2.data.product")
+            .populate("snack3.data.product");   
+
+        res.send({success: true, data: result});
     } catch (e) {
         res.send({
             success: false,

@@ -4,7 +4,7 @@ const nutritionLogSchema = new mongoose.Schema(
     {
         meal1: {
             data: [{
-                _id: {
+                product: {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: "Product",
                 },
@@ -15,7 +15,7 @@ const nutritionLogSchema = new mongoose.Schema(
         },
         snack1: {
             data: [{
-                _id: {
+                product: {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: "Product",
                 },
@@ -26,7 +26,7 @@ const nutritionLogSchema = new mongoose.Schema(
         },
         meal2: {
             data: [{
-                _id: {
+                product: {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: "Product",
                 },
@@ -37,7 +37,7 @@ const nutritionLogSchema = new mongoose.Schema(
         },
         snack2: {
             data: [{
-                _id: {
+                product: {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: "Product",
                 },
@@ -48,7 +48,7 @@ const nutritionLogSchema = new mongoose.Schema(
         },
         meal3: {
             data: [{
-                _id: {
+                product: {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: "Product",
                 },
@@ -59,7 +59,7 @@ const nutritionLogSchema = new mongoose.Schema(
         },
         snack3: {
             data: [{
-                _id: {
+                product: {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: "Product",
                 },

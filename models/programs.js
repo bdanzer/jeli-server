@@ -46,6 +46,8 @@ const programSchema = new mongoose.Schema(
         programDescription: { type: String, required: true },
         programType: { type: String, required: true },
         isPublic: { type: Boolean, required: true },
+        isPaid: { type: Boolean },
+        amount: { type: Number },
         durationOfTraining: { type: Number, required: true }, //days
         workouts: [
             {
