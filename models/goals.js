@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 // startingDate: 'YYYY-MM-DD',
 // projectedEndDate: 'YYYY-MM-DD',
@@ -16,11 +16,11 @@ const mongoose = require("mongoose");
 const goalSchema = new mongoose.Schema(
     {
         startingDate: { type: String, required: true },
-        projectedEndDate: { type: String, required: true },
+        projectedEndDate: { type: String },
         goalCategory: { type: String, required: true },
-        goalMeta: { type: String, required: true },
-        weeksToCompletion: { type: String, required: true },
-        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        goalMeta: { type: Object, required: true },
+        weeksToCompletion: { type: String },
+        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     },
     { timestamps: true }
 );
@@ -28,13 +28,13 @@ const goalSchema = new mongoose.Schema(
 goalSchema.statics.search = async function (goalName) {
     const goal = await this.find({
         name: {
-            $regex: new RegExp("^" + goalName.toLowerCase(), "i"),
+            $regex: new RegExp('^' + goalName.toLowerCase(), 'i'),
         },
     });
 
     return goal;
 };
 
-const Goal = mongoose.model("Goal", goalSchema);
+const Goal = mongoose.model('Goal', goalSchema);
 
 module.exports = Goal;

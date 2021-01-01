@@ -1,70 +1,70 @@
-const { Router } = require("express");
-const uuidv4 = require("uuid").v4;
-const moment = require("moment");
-const { readMockFile, writeMockFile } = require("../util/fileHelper");
+const { Router } = require('express');
+const uuidv4 = require('uuid').v4;
+const moment = require('moment');
 
 const router = Router();
 
-const mockFile = "goals";
-
-router.route("/").get((req, res, next) => {
-    const goals = readMockFile(mockFile);
-
-    res.status(200).json({
-        status: "success",
-        data: goals,
-    });
+router.route('/').get(async (req, res, next) => {
+    try {
+        const goal = req.context.models.Goal;
+        const goals = await goal.find({});
+        res.send({ success: true, data: goals });
+    } catch (e) {
+        res.send({
+            success: false,
+            errors: e.stack,
+        });
+    }
 });
 
-// "userId": 1,
-// "exerciseId": 2,
-// "name": "Triceps Pulldown",
-// "type": "lifting",
-// "isPublic": true,
-// "partsWorked": ["Triceps"]
-router.route("/goal").post((req, res, next) => {
-    const { name, type, isPublic, partsWorked, userId } = req.body;
-
-    const newGoalData = {
-        exerciseId: uuidv4(),
-        userId,
-        name,
-        type,
-        isPublic,
-        partsWorked,
-        dateCreated: moment().format(),
-    };
-
-    const goalsJSON = readMockFile(mockFile);
-
-    const newGoalsData = [...goalsJSON, newGoalData];
-
-    writeMockFile(mockFile, newGoalsData);
-
-    res.status(200).json({
-        status: "success",
-        data: newGoalData,
-    });
+router.route('/goal').post(async (req, res, next) => {
+    try {
+        const goal = req.context.models.Goal(req.body);
+        await goal.save();
+        res.send({ success: true, data: goal });
+    } catch (e) {
+        res.send({
+            success: false,
+            errors: e.stack,
+        });
+    }
 });
 
-router.route("/goal/:goalId").delete((req, res, next) => {
-    const { exerciseId } = req.params;
+router.route('/search').post(async (req, res, next) => {
+    if (!req.body.search || req.body.search === null) {
+        res.send({ success: false, errors: 'Did not provide Search' });
+    }
 
-    const goalsJSON = readMockFile(mockFile);
+    console.log(req.body.search);
 
-    const foundExerciseIndex = goalsJSON.findIndex(
-        (exercise) => exercise.exerciseId === exerciseId
-    );
+    const goalsFound = await req.context.models.Goal.search(req.body.search);
 
-    //removeIndexOfFound
-    goalsJSON.splice(foundExerciseIndex, 1);
+    if (goalsFound) {
+        res.send({
+            success: true,
+            data: goalsFound,
+        });
+    } else {
+        res.send({
+            success: true,
+            data: 'No Goals Found',
+        });
+    }
+});
 
-    writeMockFile(mockFile, goalsJSON);
+router.route('/goal/:goalId').delete(async (req, res, next) => {
+    const { goalId } = req.params;
 
-    res.status(200).json({
-        status: "success",
-        data: goalsJSON,
-    });
+    try {
+        const goal = req.context.models.Goal;
+        const goalDeleted = await goal.deleteOne({ _id: goalId });
+        res.send({ success: true, data: goalDeleted });
+    } catch (e) {
+        res.send({
+            success: false,
+            errors: e.stack,
+        });
+    }
 });
 
 module.exports = router;
