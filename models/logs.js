@@ -1,26 +1,9 @@
-const mongoose = require("mongoose");
-
-// "userId": 1,
-// "logId": 1,
-// "name": "Barbell Bench",
-// "description": "This is a test description for a workout",
-// "logType": "lifting",
-// "equipmentType": "bar",
-// "mechanicsType": "Compound",
-// "isPublic": true,
-// "muscleGroups": [
-//     "chest",
-//     "arms"
-// ],
-// "muscles": [
-//     "pecs",
-//     "triceps"
-// ]
+const mongoose = require('mongoose');
 
 const logSchema = new mongoose.Schema(
     {
         logType: { type: String, required: true },
-        exerciseData: [
+        exerciseLog: [
             {
                 reps: {
                     type: Number,
@@ -32,12 +15,24 @@ const logSchema = new mongoose.Schema(
                 },
                 metric: {
                     type: String,
-                    required: true,
+                    // required: true,
                 },
             },
         ],
-        exercise: { type: mongoose.Schema.Types.ObjectId, ref: "Exercise" },
-        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        exerciseInfo: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Exercise',
+            required: true,
+        },
+        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        exerciseMeta: {
+            programs: {
+                type: mongoose.Schema.Types.Mixed,
+            },
+            // programs: {
+            //     type: { type: mongoose.Schema.Types.ObjectId, ref: 'Program' },
+            // },
+        },
     },
     { timestamps: true }
 );
@@ -45,13 +40,13 @@ const logSchema = new mongoose.Schema(
 logSchema.statics.search = async function (logName) {
     const log = await this.find({
         name: {
-            $regex: new RegExp("^" + logName.toLowerCase(), "i"),
+            $regex: new RegExp('^' + logName.toLowerCase(), 'i'),
         },
     });
 
     return log;
 };
 
-const Log = mongoose.model("Log", logSchema);
+const Log = mongoose.model('Log', logSchema);
 
 module.exports = Log;

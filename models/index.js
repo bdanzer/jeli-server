@@ -9,6 +9,7 @@ const Log = require('./logs');
 const Program = require('./programs');
 const NutritionLog = require('./nutritionLogs');
 const Goal = require('./goals');
+const Session = require('./sessions');
 
 let dbConnect;
 const dbName = 'jeli';
@@ -35,6 +36,7 @@ const models = {
     Program,
     NutritionLog,
     Goal,
+    Session,
 };
 
 module.exports = { connectDb, models };

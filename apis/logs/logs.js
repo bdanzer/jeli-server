@@ -1,13 +1,10 @@
-const { Router } = require("express");
-const uuidv4 = require("uuid").v4;
-const moment = require("moment");
-const { readMockFile, writeMockFile } = require("../util/fileHelper");
+const { Router } = require('express');
+const uuidv4 = require('uuid').v4;
+const moment = require('moment');
 
 const router = Router();
 
-const mockFile = "logs";
-
-router.route("/").get(async (req, res, next) => {
+router.route('/').get(async (req, res, next) => {
     try {
         const log = req.context.models.Log;
         const logs = await log.find({});
@@ -20,50 +17,40 @@ router.route("/").get(async (req, res, next) => {
     }
 });
 
-// "userId": 1,
-// "logId": 2,
-// "name": "Triceps Pulldown",
-// "type": "lifting",
-// "isPublic": true,
-// "partsWorked": ["Triceps"]
-router.route("/log").post(async (req, res, next) => {
+router.route('/').post(async (req, res, next) => {
     try {
-        const log = req.context.models.Log(req.body);
-        await log.save();
-        res.send({ success: true, data: log });
+        const log = req.context.models.Log;
+        const Session = req.context.models.Session;
+
+        console.log('reqBody', req.body);
+
+        const logs = await log.insertMany(req.body).then((logsResult) => {
+            console.log('result ', logsResult);
+            return logsResult;
+        });
+
+        const logIds = logs.map((log) => log._id);
+
+        console.log(req.context.models, 'MODELS');
+
+        const sessionItem = await Session({
+            logs: logIds,
+        }).save();
+
+        const session = await Session.findOne(sessionItem).populate('logs');
+
+        res.send({ success: true, data: session });
     } catch (e) {
         res.send({
             success: false,
             errors: e.stack,
         });
     }
-    // const { name, type, isPublic, partsWorked, userId } = req.body;
-
-    // const newLogData = {
-    //     logId: uuidv4(),
-    //     userId,
-    //     name,
-    //     type,
-    //     isPublic,
-    //     partsWorked,
-    //     dateCreated: moment().format(),
-    // };
-
-    // const logsJSON = readMockFile(mockFile);
-
-    // const newLogsData = [...logsJSON, newLogData];
-
-    // writeMockFile(mockFile, newLogsData);
-
-    // res.status(200).json({
-    //     status: "success",
-    //     data: newLogData,
-    // });
 });
 
-router.route("/search").post(async (req, res, next) => {
+router.route('/search').post(async (req, res, next) => {
     if (!req.body.search || req.body.search === null) {
-        res.send({ success: false, errors: "Did not provide Search" });
+        res.send({ success: false, errors: 'Did not provide Search' });
     }
 
     console.log(req.body.search);
@@ -78,27 +65,24 @@ router.route("/search").post(async (req, res, next) => {
     } else {
         res.send({
             success: true,
-            data: "No Logs Found",
+            data: 'No Logs Found',
         });
     }
 });
 
-router.route("/log/:logId").delete((req, res, next) => {
+router.route('/log/:logId').delete(async (req, res, next) => {
     const { logId } = req.params;
 
-    const logsJSON = readMockFile(mockFile);
-
-    const foundLogIndex = logsJSON.findIndex((log) => log.logId === logId);
-
-    //removeIndexOfFound
-    logsJSON.splice(foundLogIndex, 1);
-
-    writeMockFile(mockFile, logsJSON);
-
-    res.status(200).json({
-        status: "success",
-        data: logsJSON,
-    });
+    try {
+        const log = req.context.models.Log;
+        const logDeleted = await log.deleteOne({ _id: logId });
+        res.send({ success: true, data: logDeleted });
+    } catch (e) {
+        res.send({
+            success: false,
+            errors: e.stack,
+        });
+    }
 });
 
 module.exports = router;

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 // "userId": 1,
 // "exerciseId": 1,
@@ -27,22 +27,23 @@ const exerciseSchema = new mongoose.Schema(
         isExercisePublic: { type: Boolean, required: true },
         muscleGroups: { type: Array, required: true },
         muscles: { type: Array, required: true },
+        frontMuscles: { type: Array, required: true },
         instructions: { type: Array },
-        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     },
     { timestamps: true }
 );
 
 exerciseSchema.statics.search = async function (exerciseName) {
     const exercise = await this.find({
-        name: {
-            $regex: new RegExp("^" + exerciseName.toLowerCase(), "i"),
+        exerciseName: {
+            $regex: new RegExp('^' + exerciseName.toLowerCase(), 'i'),
         },
     });
 
     return exercise;
 };
 
-const Exercise = mongoose.model("Exercise", exerciseSchema);
+const Exercise = mongoose.model('Exercise', exerciseSchema);
 
 module.exports = Exercise;
