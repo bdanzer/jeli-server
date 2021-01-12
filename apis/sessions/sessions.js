@@ -1,16 +1,16 @@
-const { Router } = require("express");
-const uuidv4 = require("uuid").v4;
-const moment = require("moment");
-const { readMockFile, writeMockFile } = require("../util/fileHelper");
+const { Router } = require('express');
+const uuidv4 = require('uuid').v4;
+const moment = require('moment');
+const { readMockFile, writeMockFile } = require('../util/fileHelper');
 
 const router = Router();
 
-const mockFile = "sessions";
+const mockFile = 'sessions';
 
-router.route("/").get(async (req, res, next) => {
+router.route('/').get(async (req, res, next) => {
     try {
         const session = req.context.models.Session;
-        const sessions = await session.find({});
+        const sessions = await session.find({}).populate('logs');
         res.send({ success: true, data: sessions });
     } catch (e) {
         res.send({
@@ -26,7 +26,7 @@ router.route("/").get(async (req, res, next) => {
 // "type": "lifting",
 // "isPublic": true,
 // "partsWorked": ["Triceps"]
-router.route("/session").post(async (req, res, next) => {
+router.route('/session').post(async (req, res, next) => {
     try {
         const session = req.context.models.Session(req.body);
         await session.save();
@@ -61,9 +61,9 @@ router.route("/session").post(async (req, res, next) => {
     // });
 });
 
-router.route("/search").post(async (req, res, next) => {
+router.route('/search').post(async (req, res, next) => {
     if (!req.body.search || req.body.search === null) {
-        res.send({ success: false, errors: "Did not provide Search" });
+        res.send({ success: false, errors: 'Did not provide Search' });
     }
 
     console.log(req.body.search);
@@ -80,12 +80,12 @@ router.route("/search").post(async (req, res, next) => {
     } else {
         res.send({
             success: true,
-            data: "No Sessions Found",
+            data: 'No Sessions Found',
         });
     }
 });
 
-router.route("/session/:sessionId").delete((req, res, next) => {
+router.route('/session/:sessionId').delete((req, res, next) => {
     const { sessionId } = req.params;
 
     const sessionsJSON = readMockFile(mockFile);
@@ -100,7 +100,7 @@ router.route("/session/:sessionId").delete((req, res, next) => {
     writeMockFile(mockFile, sessionsJSON);
 
     res.status(200).json({
-        status: "success",
+        status: 'success',
         data: sessionsJSON,
     });
 });
