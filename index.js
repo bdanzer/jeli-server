@@ -6,7 +6,10 @@ dotenv.config();
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
 const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+
 const { models, connectDb } = require('./models');
 
 const exercises = require('./apis/exercises/exercises');
@@ -21,26 +24,66 @@ const nutritionLog = require('./apis/nutrition/nutritionLogs/nutritionLogs');
 const recipes = require('./apis/nutrition/recipes/recipes');
 const auth = require('./apis/auth/auth');
 const goals = require('./apis/goals/goals');
+const google = require('./apis/auth/google');
+
+require('./services/aws');
 
 // Start express app
 const app = express();
 
+app.use(
+    cookieSession({
+        name: 'session',
+        keys: ['thisappisawesome'],
+        maxAge: 24 * 60 * 60 * 100,
+    })
+);
+
 // init cookie parser
 app.use(cookieParser());
-app.use(cors());
+app.use(
+    cors({
+        origin: 'http://localhost:8080', // allow to server to accept request from different origin
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        credentials: true, // allow session cookie from browser to pass through
+    })
+);
 app.use(express.json({ limit: '10kb' }));
+google();
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// var Account = require('./models/account');
+// passport.use(new LocalStrategy(Account.authenticate()));
+// passport.serializeUser(Account.serializeUser());
+// passport.deserializeUser(Account.deserializeUser());
+
+const authCheck = (req, res, next) => {
+    if (!req.user) {
+        res.status(401).json({
+            authenticated: false,
+            message: 'user has not been authenticated',
+        });
+    } else {
+        next();
+    }
+};
 
 app.use(async (req, res, next) => {
     console.log(models.user);
     req.context = {
         models,
-        me: await models.User.findByLogin('rwieruch'),
     };
     next();
 });
 
+app.use(async (req, res, next) => {
+    await setTimeout(() => next(), 2000);
+});
+
 // 3) ROUTES
-app.use('/api/exercises', exercises);
+app.use('/api/exercises', authCheck, exercises);
 // app.use("/api/goals", goals);
 app.use('/api/logs', logs);
 app.use('/api/programs', programs);

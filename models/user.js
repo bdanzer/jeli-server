@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const SALT_WORK_FACTOR = 10;
 
 const userSchema = new mongoose.Schema(
@@ -7,35 +7,34 @@ const userSchema = new mongoose.Schema(
         username: {
             type: String,
             unique: true,
-            required: true,
         },
         password: {
             type: String,
-            required: true,
+        },
+        setUpComplete: {
+            type: Boolean,
+        },
+        googleId: {
+            type: String,
         },
         timezone: {
             type: String,
-            required: true,
         },
         email: {
             type: String,
-            required: true,
         },
         firstName: {
             type: String,
-            required: true,
         },
         lastName: {
             type: String,
-            required: true,
         },
         role: {
             type: String,
-            required: true,
         },
         locale: {
             type: String,
-            default: "US",
+            default: 'US',
         },
         fitnessInfo: {
             weight: {
@@ -80,7 +79,6 @@ const userSchema = new mongoose.Schema(
         },
         betaUser: {
             type: Boolean,
-            required: true,
         },
         tokens: {
             type: Array,
@@ -89,11 +87,11 @@ const userSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-userSchema.pre("save", function (next) {
+userSchema.pre('save', function (next) {
     var user = this;
 
     // only hash the password if it has been modified (or is new)
-    if (!user.isModified("password")) return next();
+    if (!user.isModified('password')) return next();
 
     // generate a salt
     bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
@@ -128,10 +126,10 @@ userSchema.statics.findByLogin = async function (login) {
     return user;
 };
 
-userSchema.pre("remove", function (next) {
-    this.model("Message").deleteMany({ user: this._id }, next);
+userSchema.pre('remove', function (next) {
+    this.model('Message').deleteMany({ user: this._id }, next);
 });
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;

@@ -6,8 +6,18 @@ const router = Router();
 
 router.route('/').get(async (req, res, next) => {
     try {
+        const exerciseId = req.query.exerciseId;
+        let searchObj = {};
+
+        if (exerciseId) {
+            searchObj.exerciseInfo = exerciseId;
+        }
+
         const log = req.context.models.Log;
-        const logs = await log.find({});
+        const logs = await log
+            .find(searchObj)
+            .sort({ createdAt: 'descending' })
+            .populate('exerciseInfo');
         res.send({ success: true, data: logs });
     } catch (e) {
         res.send({

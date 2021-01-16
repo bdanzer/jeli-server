@@ -1,22 +1,5 @@
 const mongoose = require('mongoose');
 
-// "userId": 1,
-// "exerciseId": 1,
-// "name": "Barbell Bench",
-// "description": "This is a test description for a workout",
-// "exerciseType": "lifting",
-// "equipmentType": "bar",
-// "mechanicsType": "Compound",
-// "isPublic": true,
-// "muscleGroups": [
-//     "chest",
-//     "arms"
-// ],
-// "muscles": [
-//     "pecs",
-//     "triceps"
-// ]
-
 const exerciseSchema = new mongoose.Schema(
     {
         exerciseName: { type: String, required: true },
