@@ -25,7 +25,7 @@ router.get(
 router.get(
     '/google/callback',
     passport.authenticate('google', {
-        failureRedirect: '/login',
+        failureRedirect: '/errors',
         session: true,
     }),
     function (req, res) {
@@ -33,10 +33,10 @@ router.get(
             console.log(req.user);
             res.cookie('token', req.user);
             console.log('session', req.session);
-            return res.redirect('http://localhost:8080/login');
+            return res.redirect('http://localhost:8080/dashboard');
         } else {
             console.log('error');
-            return res.redirect('http://localhost:8080');
+            return res.redirect('http://localhost:8080/errors');
         }
         // res.redirect('http://localhost:8080');
         // res.status(200);
@@ -56,10 +56,7 @@ router.route('/token').get(async (req, res, next) => {
 
     res.status(200).json({
         status: 'success',
-        data: {
-            user: userData,
-            cookies: req.cookies,
-        },
+        data: userData,
     });
 });
 

@@ -14,6 +14,9 @@ const userSchema = new mongoose.Schema(
         setUpComplete: {
             type: Boolean,
         },
+        displayName: {
+            type: String,
+        },
         googleId: {
             type: String,
         },

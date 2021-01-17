@@ -31,6 +31,7 @@ module.exports = () => {
         // User.findOrCreate({ googleId: profile.id }, function (err, user) {
         //     return done(err, user);
         // });
+        console.log('GOOGLE PROFILE', profile);
         console.log('worked', accessToken, refreshToken);
         const currentUser = await User.findOne({
             googleId: profile.id,
@@ -39,6 +40,7 @@ module.exports = () => {
         if (!currentUser) {
             const newUser = await new User({
                 googleId: profile.id,
+                displayName: profile.displayName,
                 setUpComplete: false,
             }).save();
             if (newUser) {

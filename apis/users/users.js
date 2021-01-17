@@ -1,22 +1,22 @@
-const { Router } = require("express");
-const uuidv4 = require("uuid").v4;
-const moment = require("moment");
-const { readMockFile, writeMockFile } = require("../util/fileHelper");
+const { Router } = require('express');
+const uuidv4 = require('uuid').v4;
+const moment = require('moment');
+const { readMockFile, writeMockFile } = require('../util/fileHelper');
 
 const router = Router();
 
-const mockFile = "users";
+const mockFile = 'users';
 
-router.get("/test", async (req, res) => {
+router.get('/test', async (req, res) => {
     const user = await req.context.models.User.findById(req.context.me.id);
     return res.send(user);
 });
 
-router.route("/").get((req, res, next) => {
+router.route('/').get((req, res, next) => {
     const users = readMockFile(mockFile);
 
     res.status(200).json({
-        status: "success",
+        status: 'success',
         data: users,
     });
 });
@@ -27,7 +27,7 @@ router.route("/").get((req, res, next) => {
 // "type": "lifting",
 // "isPublic": true,
 // "partsWorked": ["Triceps"]
-router.route("/user").post(async (req, res, next) => {
+router.route('/user').post(async (req, res, next) => {
     try {
         const user = req.context.models.User(req.body);
         await user.save();
@@ -51,11 +51,25 @@ router.route("/user").post(async (req, res, next) => {
     // });
 });
 
-router.route("/user/login").post(async (req, res, next) => {
+router.route('/user/settings').put(async (req, res, next) => {
     try {
-        console.log("USERRRRRRR: ", req.body.username);
+        req.context.models.User.findOne(
+            { username: req.body.username },
+            (err, user) => {}
+        );
+    } catch (e) {
+        res.send({
+            success: false,
+            errors: e.stack,
+        });
+    }
+});
+
+router.route('/user/login').post(async (req, res, next) => {
+    try {
+        console.log('USERRRRRRR: ', req.body.username);
         if (!req.body.username || !req.body.password) {
-            throw new Error("Request must provide username and password");
+            throw new Error('Request must provide username and password');
         }
 
         req.context.models.User.findOne(
@@ -64,14 +78,14 @@ router.route("/user/login").post(async (req, res, next) => {
                 if (err) throw err;
 
                 // test a matching password
-                user.comparePassword(req.body.password, function (
-                    err,
-                    isMatch
-                ) {
-                    if (err) throw err;
-                    console.log(req.body.password, isMatch); // -&gt; Password123: true
-                    res.send(user);
-                });
+                user.comparePassword(
+                    req.body.password,
+                    function (err, isMatch) {
+                        if (err) throw err;
+                        console.log(req.body.password, isMatch); // -&gt; Password123: true
+                        res.send(user);
+                    }
+                );
             }
         );
     } catch (e) {
@@ -82,7 +96,7 @@ router.route("/user/login").post(async (req, res, next) => {
     }
 });
 
-router.route("/user/:userId").delete((req, res, next) => {
+router.route('/user/:userId').delete((req, res, next) => {
     const { userId } = req.params;
 
     const usersJSON = readMockFile(mockFile);
@@ -97,7 +111,7 @@ router.route("/user/:userId").delete((req, res, next) => {
     writeMockFile(mockFile, usersJSON);
 
     res.status(200).json({
-        status: "success",
+        status: 'success',
         data: usersJSON,
     });
 });

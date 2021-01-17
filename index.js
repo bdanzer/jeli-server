@@ -80,6 +80,7 @@ app.use(async (req, res, next) => {
 
 app.use(async (req, res, next) => {
     await setTimeout(() => next(), 2000);
+    // next();
 });
 
 // 3) ROUTES
