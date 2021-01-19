@@ -86,16 +86,16 @@ app.use(async (req, res, next) => {
 // 3) ROUTES
 app.use('/api/exercises', authCheck, exercises);
 // app.use("/api/goals", goals);
-app.use('/api/logs', logs);
+app.use('/api/logs', authCheck, logs);
 app.use('/api/programs', programs);
-app.use('/api/sessions', sessions);
-app.use('/api/users', users);
-app.use('/api/nutrition/logs', nutritionLog);
-app.use('/api/products', products);
-app.use('/api/recipes', recipes);
-app.use('/api/workouts', workouts);
+app.use('/api/sessions', authCheck, sessions);
+app.use('/api/users', authCheck, users);
+app.use('/api/nutrition/logs', authCheck, nutritionLog);
+app.use('/api/products', authCheck, products);
+app.use('/api/recipes', authCheck, recipes);
+app.use('/api/workouts', authCheck, workouts);
 app.use('/api/auth', auth);
-app.use('/api/goals', goals);
+app.use('/api/goals', authCheck, goals);
 
 app.all('*', (req, res, next) => {
     res.status(500).send(`Can't find ${req.originalUrl} on this server!`);

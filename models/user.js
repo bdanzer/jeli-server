@@ -20,9 +20,6 @@ const userSchema = new mongoose.Schema(
         googleId: {
             type: String,
         },
-        timezone: {
-            type: String,
-        },
         email: {
             type: String,
         },
@@ -35,41 +32,20 @@ const userSchema = new mongoose.Schema(
         role: {
             type: String,
         },
-        locale: {
-            type: String,
-            default: 'US',
-        },
         fitnessInfo: {
+            //stored as kilograms
             weight: {
-                metric: {
-                    type: String,
-                },
-                value: {
-                    type: Number,
-                },
+                type: Number,
             },
+            //stored as centimeters
             height: {
-                metric: {
-                    type: String,
-                },
-                feet: {
-                    type: Number,
-                },
-                inches: {
-                    type: Number,
-                },
+                type: Number,
+            },
+            bodyFat: {
+                type: Number,
             },
         },
         userSettings: {
-            goalView: {
-                type: String,
-            },
-            preferredPrimaryColor: {
-                type: String,
-            },
-            preferredSecondaryColor: {
-                type: String,
-            },
             preferredTheme: {
                 type: String,
             },
@@ -78,6 +54,13 @@ const userSchema = new mongoose.Schema(
             },
             turnOnInspiringQuotes: {
                 type: Boolean,
+            },
+            timezone: {
+                type: String,
+            },
+            locale: {
+                type: String,
+                default: 'US',
             },
         },
         betaUser: {

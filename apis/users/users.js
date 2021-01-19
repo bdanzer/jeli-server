@@ -21,12 +21,6 @@ router.route('/').get((req, res, next) => {
     });
 });
 
-// "userId": 1,
-// "userId": 2,
-// "name": "Triceps Pulldown",
-// "type": "lifting",
-// "isPublic": true,
-// "partsWorked": ["Triceps"]
 router.route('/user').post(async (req, res, next) => {
     try {
         const user = req.context.models.User(req.body);
@@ -38,25 +32,20 @@ router.route('/user').post(async (req, res, next) => {
             errors: e.stack,
         });
     }
-
-    // const usersJSON = readMockFile(mockFile);
-
-    // const newUsersData = [...usersJSON, newUserData];
-
-    // writeMockFile(mockFile, newUsersData);
-
-    // res.status(200).json({
-    //     status: "success",
-    //     data: newUserData,
-    // });
 });
 
 router.route('/user/settings').put(async (req, res, next) => {
     try {
-        req.context.models.User.findOne(
-            { username: req.body.username },
-            (err, user) => {}
+        console.log('user', req.user, req.session);
+        const user = await req.context.models.User.findOneAndUpdate(
+            { _id: req.user },
+            req.body,
+            { new: true }
         );
+        res.send({
+            success: true,
+            data: user,
+        });
     } catch (e) {
         res.send({
             success: false,
