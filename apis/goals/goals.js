@@ -5,9 +5,15 @@ const moment = require('moment');
 const router = Router();
 
 router.route('/').get(async (req, res, next) => {
+    const { goalType, goalCategory } = req.query;
+    console.log(goalType, goalCategory);
+
     try {
         const goal = req.context.models.Goal;
-        const goals = await goal.find({});
+        const goals = await goal.find({
+            goalCategory,
+            'goalMeta.goalType': goalType,
+        });
         res.send({ success: true, data: goals });
     } catch (e) {
         res.send({

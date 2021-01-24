@@ -62,6 +62,9 @@ const userSchema = new mongoose.Schema(
                 type: String,
                 default: 'US',
             },
+            dateOfBirth: {
+                type: Date,
+            },
         },
         betaUser: {
             type: Boolean,
