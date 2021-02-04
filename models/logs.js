@@ -1,8 +1,22 @@
 const mongoose = require('mongoose');
 
-const logSchema = new mongoose.Schema(
+const baseOptions = {
+    discriminatorKey: 'logType',
+    timestamps: true,
+    // collection: 'Log',
+};
+const logBase = new mongoose.Schema(
     {
-        logType: { type: String, required: true },
+        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    },
+    baseOptions
+);
+
+const Log = mongoose.model('Log', logBase);
+
+const ExerciseLog = Log.discriminator(
+    'exercise',
+    new mongoose.Schema({
         exerciseLog: [
             {
                 reps: {
@@ -13,10 +27,6 @@ const logSchema = new mongoose.Schema(
                     type: Number,
                     required: true,
                 },
-                metric: {
-                    type: String,
-                    // required: true,
-                },
             },
         ],
         exerciseInfo: {
@@ -24,29 +34,57 @@ const logSchema = new mongoose.Schema(
             ref: 'Exercise',
             required: true,
         },
-        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-        exerciseMeta: {
-            programs: {
-                type: mongoose.Schema.Types.Mixed,
-            },
-            // programs: {
-            //     type: { type: mongoose.Schema.Types.ObjectId, ref: 'Program' },
-            // },
-        },
-    },
-    { timestamps: true }
+        exerciseMeta: {}, //need to figure out
+    })
 );
 
-logSchema.statics.search = async function (logName) {
-    const log = await this.find({
-        name: {
-            $regex: new RegExp('^' + logName.toLowerCase(), 'i'),
-        },
-    });
+// const logSchema = new mongoose.Schema(
+//     {
+//         logType: { type: String, required: true },
+//         exerciseLog: [
+//             {
+//                 reps: {
+//                     type: Number,
+//                     required: true,
+//                 },
+//                 weight: {
+//                     type: Number,
+//                     required: true,
+//                 },
+//                 metric: {
+//                     type: String,
+//                     // required: true,
+//                 },
+//             },
+//         ],
+//         exerciseInfo: {
+//             type: mongoose.Schema.Types.ObjectId,
+//             ref: 'Exercise',
+//             required: true,
+//         },
+//         user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+//         exerciseMeta: {
+//             programs: {
+//                 type: mongoose.Schema.Types.Mixed,
+//             },
+//             // programs: {
+//             //     type: { type: mongoose.Schema.Types.ObjectId, ref: 'Program' },
+//             // },
+//         },
+//     },
+//     { timestamps: true }
+// );
 
-    return log;
-};
+// logSchema.statics.search = async function (logName) {
+//     const log = await this.find({
+//         name: {
+//             $regex: new RegExp('^' + logName.toLowerCase(), 'i'),
+//         },
+//     });
 
-const Log = mongoose.model('Log', logSchema);
+//     return log;
+// };
 
-module.exports = Log;
+// const Log = mongoose.model('Log', logSchema);
+
+module.exports = { ExerciseLog };

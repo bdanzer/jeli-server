@@ -13,7 +13,7 @@ const router = Router();
 router.get(
     '/google',
     passport.authenticate('google', {
-        scope: ['profile'],
+        scope: ['profile', 'email'],
     })
 );
 
@@ -25,6 +25,7 @@ router.get(
 router.get(
     '/google/callback',
     passport.authenticate('google', {
+        scope: ['profile', 'email'],
         failureRedirect: '/errors',
         session: true,
     }),
@@ -32,7 +33,7 @@ router.get(
         if (req.user) {
             console.log(req.user);
             res.cookie('token', req.user);
-            console.log('session', req.session);
+            // console.log('session', req.session);
             return res.redirect('http://localhost:8080/dashboard');
         } else {
             console.log('error');
@@ -50,7 +51,7 @@ router.get('/logout', (req, res) => {
 });
 
 router.route('/token').get(async (req, res, next) => {
-    console.log('session', req.session);
+    // console.log('session', req.session);
 
     const userData = (await req.context.models.User.findById(req.user)) || null;
 

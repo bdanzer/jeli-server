@@ -31,16 +31,17 @@ module.exports = () => {
         // User.findOrCreate({ googleId: profile.id }, function (err, user) {
         //     return done(err, user);
         // });
-        console.log('GOOGLE PROFILE', profile);
+        console.log('GOOGLE PROFILE EMAIL', profile._json.email);
         console.log('worked', accessToken, refreshToken);
         const currentUser = await User.findOne({
-            googleId: profile.id,
+            email: profile._json.email,
         });
         // create new user if the database doesn't have this user
         if (!currentUser) {
             const newUser = await new User({
                 googleId: profile.id,
                 displayName: profile.displayName,
+                email: profile._json.email,
                 setUpComplete: false,
             }).save();
             if (newUser) {

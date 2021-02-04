@@ -11,6 +11,7 @@ const exerciseSchema = new mongoose.Schema(
         muscleGroups: { type: Array, required: true },
         muscles: { type: Array, required: true },
         frontMuscles: { type: Array, required: true },
+        backMuscles: { type: Array, required: true },
         instructions: { type: Array },
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     },

@@ -13,7 +13,7 @@ router.route('/').get(async (req, res, next) => {
             searchObj.exerciseInfo = exerciseId;
         }
 
-        const log = req.context.models.Log;
+        const log = req.context.models.Log.ExerciseLog;
         const logs = await log
             .find(searchObj)
             .sort({ createdAt: 'descending' })
@@ -29,12 +29,23 @@ router.route('/').get(async (req, res, next) => {
 
 router.route('/').post(async (req, res, next) => {
     try {
-        const log = req.context.models.Log;
+        const log = req.context.models.Log.ExerciseLog;
         const Session = req.context.models.Session;
 
         console.log('reqBody', req.body);
 
-        const logs = await log.insertMany(req.body).then((logsResult) => {
+        //could do some check here and filter the data based on log type and then insertMany
+
+        const exerciseLogs = req.body.filter(
+            (logs) => logs.logType === 'exercise'
+        );
+
+        //Change this change, probably should only error if we didn't have results from any log type
+        if (!exerciseLogs && exerciseLogs.length === 0) {
+            throw new Error('There were no logs to log brah');
+        }
+
+        const logs = await log.insertMany(exerciseLogs).then((logsResult) => {
             console.log('result ', logsResult);
             return logsResult;
         });

@@ -44,6 +44,10 @@ const userSchema = new mongoose.Schema(
             bodyFat: {
                 type: Number,
             },
+            userActivity: {
+                type: String,
+                //turn to enum
+            },
         },
         userSettings: {
             preferredTheme: {

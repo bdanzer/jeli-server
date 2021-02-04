@@ -1,5 +1,6 @@
 // dot env configuration
 const dotenv = require('dotenv');
+const mongoose = require('mongoose');
 
 // load env
 dotenv.config();
@@ -22,9 +23,14 @@ const workouts = require('./apis/workouts/workouts');
 const products = require('./apis/nutrition/products/products');
 const nutritionLog = require('./apis/nutrition/nutritionLogs/nutritionLogs');
 const recipes = require('./apis/nutrition/recipes/recipes');
+const meals = require('./apis/nutrition/meals/meals');
 const auth = require('./apis/auth/auth');
 const goals = require('./apis/goals/goals');
 const google = require('./apis/auth/google');
+const importNutrition = require('./apis/nutrition/import/import');
+const paypal = require('./apis/payments/paypal/paypal');
+const { ExerciseLog } = require('./models/logs');
+const IPNController = require('./client/IPN');
 
 require('./services/aws');
 
@@ -79,9 +85,22 @@ app.use(async (req, res, next) => {
 });
 
 app.use(async (req, res, next) => {
-    await setTimeout(() => next(), 2000);
+    await setTimeout(() => next(), 1000);
     // next();
 });
+
+async function hello() {
+    const log = await new ExerciseLog({
+        exerciseLog: {
+            reps: 1,
+            weight: 150,
+        },
+        exerciseInfo: '5ff694dc22b4521b7cb81875',
+    }).save();
+
+    console.log(log, '=======LOG=======');
+}
+hello();
 
 // 3) ROUTES
 app.use('/api/exercises', authCheck, exercises);
@@ -93,9 +112,13 @@ app.use('/api/users', authCheck, users);
 app.use('/api/nutrition/logs', authCheck, nutritionLog);
 app.use('/api/products', authCheck, products);
 app.use('/api/recipes', authCheck, recipes);
+app.use('/api/meals', authCheck, meals);
 app.use('/api/workouts', authCheck, workouts);
 app.use('/api/auth', auth);
 app.use('/api/goals', authCheck, goals);
+app.use('/api/nutrition/import', importNutrition);
+app.use('/api/payments/paypal', paypal);
+app.use('/ipn', IPNController.index);
 
 app.all('*', (req, res, next) => {
     res.status(500).send(`Can't find ${req.originalUrl} on this server!`);

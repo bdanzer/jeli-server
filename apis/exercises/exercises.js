@@ -1,17 +1,19 @@
-const { Router } = require("express");
-const uuidv4 = require("uuid").v4;
-const moment = require("moment");
-const { readMockFile, writeMockFile } = require("../util/fileHelper");
-
+const { Router } = require('express');
+const uuidv4 = require('uuid').v4;
+const moment = require('moment');
 const router = Router();
 
-const mockFile = "exercises";
-
-router.route("/").get(async (req, res, next) => {
+router.route('/').get(async (req, res, next) => {
     try {
         const exercise = req.context.models.Exercise;
-        const exercises = await exercise.find({});
-        res.send({ success: true, data: exercises });
+        let perPage = req.query.perPage || 12;
+        let page = Number(req.query.page) - 1 || 0;
+
+        const exercises = await exercise
+            .find({})
+            .limit(perPage)
+            .skip(perPage * page);
+        res.send({ success: true, data: exercises, length: exercises.length });
     } catch (e) {
         res.send({
             success: false,
@@ -26,7 +28,7 @@ router.route("/").get(async (req, res, next) => {
 // "type": "lifting",
 // "isPublic": true,
 // "partsWorked": ["Triceps"]
-router.route("/exercise").post(async (req, res, next) => {
+router.route('/exercise').post(async (req, res, next) => {
     try {
         const exercise = req.context.models.Exercise(req.body);
         await exercise.save();
@@ -61,9 +63,9 @@ router.route("/exercise").post(async (req, res, next) => {
     // });
 });
 
-router.route("/search").post(async (req, res, next) => {
+router.route('/search').post(async (req, res, next) => {
     if (!req.body.search || req.body.search === null) {
-        res.send({ success: false, errors: "Did not provide Search" });
+        res.send({ success: false, errors: 'Did not provide Search' });
     }
 
     console.log(req.body.search);
@@ -80,12 +82,12 @@ router.route("/search").post(async (req, res, next) => {
     } else {
         res.send({
             success: true,
-            data: "No Exercises Found",
+            data: 'No Exercises Found',
         });
     }
 });
 
-router.route("/exercise/:exerciseId").delete(async (req, res, next) => {
+router.route('/exercise/:exerciseId').delete(async (req, res, next) => {
     const { exerciseId } = req.params;
 
     try {

@@ -42,10 +42,38 @@ router.route('/').get(async (req, res, next) => {
     }
 });
 
+router.route('/recent-meals').get(async (req, res, next) => {
+    let query;
+    try {
+        const query = req.body._id
+            ? { _id: req.body._id }
+            : { _id: new ObjectId() };
+
+        const result = await req.context.models.NutritionLog.find()
+            .sort({ createdAt: -1 })
+            .limit(3)
+            .populate('meal1.data.product')
+            .populate('meal2.data.product')
+            .populate('meal3.data.product')
+            .populate('snack1.data.product')
+            .populate('snack2.data.product')
+            .populate('snack3.data.product');
+
+        res.send({ success: true, data: result });
+    } catch (e) {
+        res.send({
+            success: false,
+            errors: e.stack,
+        });
+    }
+});
+
 router.route('/log').post(async (req, res, next) => {
     let query;
     try {
-        const query = req.body._id ? { _id: req.body._id } : {_id: new ObjectId()};
+        const query = req.body._id
+            ? { _id: req.body._id }
+            : { _id: new ObjectId() };
         const update = req.body;
         const options = { upsert: true, new: true, setDefaultsOnInsert: true };
 
