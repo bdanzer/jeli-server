@@ -1,90 +1,94 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 const SALT_WORK_FACTOR = 10;
 
 const userSchema = new mongoose.Schema(
     {
         username: {
-            type: String,
-            unique: true,
+            type: String
         },
         password: {
-            type: String,
+            type: String
         },
         setUpComplete: {
-            type: Boolean,
+            type: Boolean
         },
         displayName: {
-            type: String,
+            type: String
         },
         googleId: {
             type: String,
+            unique: true
         },
         email: {
             type: String,
+            unique: true
         },
         firstName: {
-            type: String,
+            type: String
         },
         lastName: {
-            type: String,
+            type: String
         },
         role: {
-            type: String,
+            type: String
         },
         fitnessInfo: {
             //stored as kilograms
             weight: {
-                type: Number,
+                type: Number
             },
             //stored as centimeters
             height: {
-                type: Number,
+                type: Number
             },
             bodyFat: {
-                type: Number,
+                type: Number
             },
             userActivity: {
-                type: String,
+                type: String
                 //turn to enum
             },
+            sex: {
+                type: String
+            }
         },
         userSettings: {
             preferredTheme: {
-                type: String,
+                type: String
             },
             preferredMetric: {
-                type: String,
+                type: String
             },
             turnOnInspiringQuotes: {
-                type: Boolean,
+                type: Boolean
             },
             timezone: {
-                type: String,
+                type: String
             },
             locale: {
                 type: String,
-                default: 'US',
+                default: "US"
             },
             dateOfBirth: {
-                type: Date,
-            },
+                type: Date
+            }
         },
         betaUser: {
-            type: Boolean,
+            type: Boolean
         },
         tokens: {
-            type: Array,
-        },
+            type: Array
+        }
     },
-    { timestamps: true }
+    {timestamps: true}
 );
 
-userSchema.pre('save', function (next) {
+userSchema.pre("save", function (next) {
     var user = this;
 
     // only hash the password if it has been modified (or is new)
-    if (!user.isModified('password')) return next();
+    if (!user.isModified("password")) return next();
 
     // generate a salt
     bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
@@ -109,20 +113,20 @@ userSchema.methods.comparePassword = function (candidatePassword, cb) {
 
 userSchema.statics.findByLogin = async function (login) {
     let user = await this.findOne({
-        username: login,
+        username: login
     });
 
     if (!user) {
-        user = await this.findOne({ email: login });
+        user = await this.findOne({email: login});
     }
 
     return user;
 };
 
-userSchema.pre('remove', function (next) {
-    this.model('Message').deleteMany({ user: this._id }, next);
+userSchema.pre("remove", function (next) {
+    this.model("Message").deleteMany({user: this._id}, next);
 });
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 
 module.exports = User;

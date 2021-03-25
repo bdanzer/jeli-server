@@ -31,7 +31,7 @@ module.exports = () => {
         // User.findOrCreate({ googleId: profile.id }, function (err, user) {
         //     return done(err, user);
         // });
-        console.log('GOOGLE PROFILE EMAIL', profile._json.email);
+        console.log('GOOGLE PROFILE EMAIL', profile._json.email, profile, 'HEREREREREREE');
         console.log('worked', accessToken, refreshToken);
         const currentUser = await User.findOne({
             email: profile._json.email,

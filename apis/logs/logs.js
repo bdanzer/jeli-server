@@ -31,12 +31,13 @@ router.route('/').post(async (req, res, next) => {
     try {
         const log = req.context.models.Log.ExerciseLog;
         const Session = req.context.models.Session;
+        const loggedTime = req.body.loggedTime;
 
         console.log('reqBody', req.body);
 
         //could do some check here and filter the data based on log type and then insertMany
 
-        const exerciseLogs = req.body.filter(
+        const exerciseLogs = req.body.logs.filter(
             (logs) => logs.logType === 'exercise'
         );
 
@@ -56,6 +57,7 @@ router.route('/').post(async (req, res, next) => {
 
         const sessionItem = await Session({
             logs: logIds,
+            loggedTime,
         }).save();
 
         const session = await Session.findOne(sessionItem).populate('logs');

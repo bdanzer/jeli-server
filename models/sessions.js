@@ -4,9 +4,9 @@ const sessionSchema = new mongoose.Schema(
     {
         name: { type: String },
         loggedTime: {
-            seconds: { type: Number },
-            minutes: { type: Number },
-            hours: { type: Number },
+            seconds: { type: String },
+            minutes: { type: String },
+            hours: { type: String },
         },
         logs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Log' }],
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
