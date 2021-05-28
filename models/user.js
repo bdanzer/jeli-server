@@ -79,6 +79,20 @@ const userSchema = new mongoose.Schema(
         },
         tokens: {
             type: Array
+        },
+        activeSession: {
+            inProgress: {
+                type: Boolean,
+                default: false
+            },
+            exercises: [
+                {
+                    exercise: {
+                        type: mongoose.Schema.Types.ObjectId,
+                        ref: "Exercise"
+                    }
+                }
+            ]
         }
     },
     {timestamps: true}

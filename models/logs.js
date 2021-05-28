@@ -1,40 +1,40 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const baseOptions = {
-    discriminatorKey: 'logType',
-    timestamps: true,
+    discriminatorKey: "logType",
+    timestamps: true
     // collection: 'Log',
 };
 const logBase = new mongoose.Schema(
     {
-        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        user: {type: mongoose.Schema.Types.ObjectId, ref: "User"}
     },
     baseOptions
 );
 
-const Log = mongoose.model('Log', logBase);
+const Log = mongoose.model("Log", logBase);
 
 const ExerciseLog = Log.discriminator(
-    'exercise',
+    "exercise",
     new mongoose.Schema({
         exerciseLog: [
             {
                 reps: {
                     type: Number,
-                    required: true,
+                    required: true
                 },
                 weight: {
                     type: Number,
-                    required: true,
-                },
-            },
+                    required: true
+                }
+            }
         ],
         exerciseInfo: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Exercise',
-            required: true,
+            ref: "Exercise",
+            required: true
         },
-        exerciseMeta: {}, //need to figure out
+        exerciseMeta: {} //need to figure out
     })
 );
 
@@ -87,4 +87,4 @@ const ExerciseLog = Log.discriminator(
 
 // const Log = mongoose.model('Log', logSchema);
 
-module.exports = { ExerciseLog };
+module.exports = {ExerciseLog};
