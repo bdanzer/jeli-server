@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 // startingDate: 'YYYY-MM-DD',
 // projectedEndDate: 'YYYY-MM-DD',
@@ -13,28 +13,30 @@ const mongoose = require('mongoose');
 // },
 // weeksToCompletion: 'Here',
 
+//need to use discriminators to change different categories
+
 const goalSchema = new mongoose.Schema(
     {
-        startingDate: { type: String, required: true },
-        projectedEndDate: { type: String },
-        goalCategory: { type: String, required: true },
-        goalMeta: { type: Object, required: true },
-        weeksToCompletion: { type: String },
-        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        startingDate: {type: String, required: true},
+        projectedEndDate: {type: String},
+        goalCategory: {type: String, required: true},
+        goalMeta: {type: Object, required: true},
+        weeksToCompletion: {type: String},
+        user: {type: mongoose.Schema.Types.ObjectId, ref: "User"}
     },
-    { timestamps: true }
+    {timestamps: true}
 );
 
 goalSchema.statics.search = async function (goalName) {
     const goal = await this.find({
         name: {
-            $regex: new RegExp('^' + goalName.toLowerCase(), 'i'),
-        },
+            $regex: new RegExp("^" + goalName.toLowerCase(), "i")
+        }
     });
 
     return goal;
 };
 
-const Goal = mongoose.model('Goal', goalSchema);
+const Goal = mongoose.model("Goal", goalSchema);
 
 module.exports = Goal;
