@@ -31,17 +31,24 @@ const exerciseSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-exerciseSchema.statics.search = async function (exerciseName) {
-  const exercise = await this.find({
-    exerciseName: {
-      $regex: new RegExp("^" + exerciseName.toLowerCase(), "i"),
-    },
-  });
-
-  return exercise;
-};
-
 const Exercise = mongoose.model("Exercise", exerciseSchema);
 const ExerciseTC = composeWithMongoose(Exercise);
+
+ExerciseTC.addResolver({
+  name: "exerciseSearch",
+  kind: "query",
+  args: { exerciseName: "String" },
+  type: [ExerciseTC],
+  resolve: async ({ source, args }) => {
+    const exercise = await Exercise.find({
+      exerciseName: {
+        $regex: new RegExp("^" + args.exerciseName.toLowerCase(), "i"),
+      },
+    }).exec();
+
+    if (!exercise) throw new Error("found nothing");
+    return exercise;
+  },
+});
 
 module.exports = { ExerciseTC, Exercise };

@@ -36,104 +36,108 @@ const IPNController = require("./client/IPN");
 
 require("./services/aws");
 
-// Start express app
-const app = express();
-
-app.use(
-  cookieSession({
-    name: "session",
-    keys: ["thisappisawesome"],
-    maxAge: 24 * 60 * 60 * 100,
-  })
-);
-
-// init cookie parser
-app.use(cookieParser());
-app.use(
-  cors({
-    origin: "http://localhost:8080", // allow to server to accept request from different origin
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true, // allow session cookie from browser to pass through
-  })
-);
-app.use(express.json({ limit: "10kb" }));
-google();
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-// var Account = require('./models/account');
-// passport.use(new LocalStrategy(Account.authenticate()));
-// passport.serializeUser(Account.serializeUser());
-// passport.deserializeUser(Account.deserializeUser());
-
-const authCheck = (req, res, next) => {
-  if (!req.user) {
-    res.status(401).json({
-      authenticated: false,
-      message: "user has not been authenticated",
-    });
-  } else {
-    next();
-  }
-};
-
-app.use(async (req, res, next) => {
-  console.log(models.user);
-  req.context = {
-    models,
-  };
-  next();
-});
-
-app.use(async (req, res, next) => {
-  await setTimeout(() => next(), 1000);
-  // next();
-});
-
-async function hello() {
-  const log = await new ExerciseLog({
-    exerciseLog: {
-      reps: 1,
-      weight: 150,
-    },
-    exerciseInfo: "5ff694dc22b4521b7cb81875",
-  }).save();
-
-  console.log(log, "=======LOG=======");
-}
-hello();
-
-// // 3) ROUTES
-// app.use("/api/exercises", authCheck, exercises);
-// // app.use("/api/goals", goals);
-// app.use("/api/logs", authCheck, logs);
-// app.use("/api/programs", programs);
-// app.use("/api/sessions", authCheck, sessions);
-// app.use("/api/users", authCheck, users);
-// app.use("/api/nutrition/logs", authCheck, nutritionLog);
-// app.use("/api/products", authCheck, products);
-// app.use("/api/recipes", authCheck, recipes);
-// app.use("/api/meals", authCheck, meals);
-// app.use("/api/workouts", authCheck, workouts);
-app.use("/api/auth", auth);
-// app.use("/api/goals", authCheck, goals);
-// app.use("/api/nutrition/import", importNutrition);
-// app.use("/api/payments/paypal", paypal);
-// app.use("/ipn", IPNController.index);
-
-// app.all("*", (req, res, next) => {
-//   res.status(500).send(`Can't find ${req.originalUrl} on this server!`);
-// });
-
 connectDb().then(async () => {
   try {
+    startApolloServer();
   } catch (e) {
     console.log(e.stack);
   }
 });
 
 async function startApolloServer() {
+  // Start express app
+  const app = express();
+
+  app.use(
+    cookieSession({
+      name: "session",
+      keys: ["thisappisawesome"],
+      maxAge: 24 * 60 * 60 * 100,
+    })
+  );
+
+  // init cookie parser
+  app.use(cookieParser());
+  app.use(
+    cors({
+      origin: "http://localhost:8080", // allow to server to accept request from different origin
+      methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+      credentials: true, // allow session cookie from browser to pass through
+    })
+  );
+  app.use(express.json({ limit: "10kb" }));
+  google();
+
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  // var Account = require('./models/account');
+  // passport.use(new LocalStrategy(Account.authenticate()));
+  // passport.serializeUser(Account.serializeUser());
+  // passport.deserializeUser(Account.deserializeUser());
+
+  const authCheck = (req, res, next) => {
+    if (!req.user) {
+      res.status(401).json({
+        authenticated: false,
+        message: "user has not been authenticated",
+      });
+    } else {
+      next();
+    }
+  };
+
+  app.use(async (req, res, next) => {
+    console.log(models.user);
+    req.context = {
+      models,
+    };
+    next();
+  });
+
+  app.use(async (req, res, next) => {
+    await setTimeout(() => next(), 1000);
+    // next();
+  });
+
+  // async function hello() {
+  //   const log = await new ExerciseLog({
+  //     exerciseLog: {
+  //       reps: 1,
+  //       weight: 150,
+  //     },
+  //     exerciseInfo: "5ff694dc22b4521b7cb81875",
+  //   }).save();
+
+  //   console.log(log, "=======LOG=======");
+  // }
+  // hello();
+
+  // // 3) ROUTES
+  // app.use("/api/exercises", authCheck, exercises);
+  // // app.use("/api/goals", goals);
+  // app.use("/api/logs", authCheck, logs);
+  // app.use("/api/programs", programs);
+  // app.use("/api/sessions", authCheck, sessions);
+  // app.use("/api/users", authCheck, users);
+  // app.use("/api/nutrition/logs", authCheck, nutritionLog);
+  // app.use("/api/products", authCheck, products);
+  // app.use("/api/recipes", authCheck, recipes);
+  // app.use("/api/meals", authCheck, meals);
+  // app.use("/api/workouts", authCheck, workouts);
+  app.use("/api/auth", auth);
+  // app.use("/api/goals", authCheck, goals);
+  // app.use("/api/nutrition/import", importNutrition);
+  // app.use("/api/payments/paypal", paypal);
+  // app.use("/ipn", IPNController.index);
+
+  //   app.all("*", authCheck, (req, res, next) => {
+  //     if (req.user) {
+  //       next();
+  //     }
+  //     res.status(500).send(`Can't find ${req.originalUrl} on this server!`);
+  //   });
+
   const port = process.env.PORT || 3003;
   const server = new ApolloServer({
     schema: graphqlSchemas,
@@ -149,5 +153,3 @@ async function startApolloServer() {
   console.log(`Now browse to http://localhost:${port}` + server.graphqlPath);
   return { server, app };
 }
-
-startApolloServer();

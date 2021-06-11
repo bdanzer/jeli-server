@@ -8,6 +8,7 @@ const ExerciseQuery = {
   exerciseCount: ExerciseTC.getResolver("count"),
   exerciseConnection: ExerciseTC.getResolver("connection"),
   exercisePagination: ExerciseTC.getResolver("pagination"),
+  exerciseSearch: ExerciseTC.getResolver("exerciseSearch"),
 };
 
 const ExerciseMutation = {
