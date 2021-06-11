@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const uuidv4 = require('uuid').v4;
 const moment = require('moment');
-const { readMockFile, writeMockFile } = require('../util/fileHelper');
+const { readMockFile, writeMockFile } = require('../../util/fileHelper');
 
 const router = Router();
 
