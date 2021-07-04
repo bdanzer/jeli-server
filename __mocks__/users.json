@@ -1,35 +1,35 @@
 [
-    {
-        "userId": 1,
-        "username": "bdanzer",
-        "email": "britt.danzer@gmail.com",
-        "firstName": "Britt",
-        "lastName": "Danzer",
-        "role": "admin",
-        "locale": "US",
-        "fitnessInfo": {
-            "weight": {
-                "metric": "thing",
-                "value": 182
-            },
-            "height": {
-                "metric": "imperial",
-                "feet": "5",
-                "inches": "4"
-            }
-        },
-        "userSettings": {
-            "goalView": "relays",
-            "preferredPrimaryColor": "#000",
-            "preferredSecondaryColor": "",
-            "preferredTheme": "light",
-            "preferredMetric": "ibs", // us or uk
-            "turnOnInspiringQuotes": true
-        },
-        "jwt": null,
-        "betaUser": true,
-        "tokens": []
-    }
+  {
+    "userId": 1,
+    "username": "bdanzer",
+    "email": "britt.danzer@gmail.com",
+    "firstName": "Britt",
+    "lastName": "Danzer",
+    "role": "admin",
+    "locale": "US",
+    "fitnessInfo": {
+      "weight": {
+        "metric": "thing",
+        "value": 182
+      },
+      "height": {
+        "metric": "imperial",
+        "feet": "5",
+        "inches": "4"
+      }
+    },
+    "userSettings": {
+      "goalView": "relays",
+      "preferredPrimaryColor": "#000",
+      "preferredSecondaryColor": "",
+      "preferredTheme": "light",
+      "preferredMetric": "ibs", // us or uk
+      "turnOnInspiringQuotes": true
+    },
+    "jwt": null,
+    "betaUser": true,
+    "tokens": []
+  }
 ]
 
 // One of the most important aspect of a goal is measurability. This app is designed

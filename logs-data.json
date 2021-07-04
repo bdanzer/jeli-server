@@ -1,16 +1,16 @@
 [
-    {
-        "logId": 1,
-        "sprintId": 1,
-        "workout": 1,
-        "excerciseId": 1,
-        "date": "yyyy-mm-dd",
-        "sets": [
-            {
-                "reps": 12,
-                "weight": 150,
-                "metric": "pounds"
-            }
-        ]
-    }
+  {
+    "logId": 1,
+    "sprintId": 1,
+    "workout": 1,
+    "excerciseId": 1,
+    "date": "yyyy-mm-dd",
+    "sets": [
+      {
+        "reps": 12,
+        "weight": 150,
+        "metric": "pounds"
+      }
+    ]
+  }
 ]

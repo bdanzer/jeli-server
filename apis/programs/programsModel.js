@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 // const timestamps = require("mongoose-timestamp");
 const { composeWithMongoose } = require("graphql-compose-mongoose");
+const { WorkoutTC } = require("../workouts/workoutsModel");
 
 const programSchema = new mongoose.Schema(
   {
@@ -14,7 +15,7 @@ const programSchema = new mongoose.Schema(
     workouts: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "Workout",
       },
     ],
     user: {
@@ -37,5 +38,13 @@ programSchema.statics.search = async function (programName) {
 
 const Program = mongoose.model("Program", programSchema);
 const ProgramTC = composeWithMongoose(Program);
+ProgramTC.addRelation("workouts", {
+  resolver: () => WorkoutTC.getResolver("dataLoaderMany"),
+  prepareArgs: {
+    // resolver `findByIds` has `_ids` arg, let provide value to it
+    _ids: (source) => source.workouts,
+  },
+  projection: { workouts: 1 }, // point fields in source object, which should be fetched from DB
+});
 
 module.exports = { ProgramTC, Program };

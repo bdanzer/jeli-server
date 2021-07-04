@@ -21,8 +21,6 @@ const exerciseSchema = new mongoose.Schema(
       enum: ["isometric", "compound"],
     },
     isExercisePublic: { type: Boolean, required: true },
-    muscleGroups: { type: Array, required: true },
-    muscles: { type: Array, required: true },
     frontMuscles: { type: Array, required: true },
     backMuscles: { type: Array, required: true },
     instructions: { type: Array },
@@ -42,7 +40,7 @@ ExerciseTC.addResolver({
   resolve: async ({ source, args }) => {
     const exercise = await Exercise.find({
       exerciseName: {
-        $regex: new RegExp("^" + args.exerciseName.toLowerCase(), "i"),
+        $regex: new RegExp(args.exerciseName.toLowerCase(), "i"),
       },
     }).exec();
 

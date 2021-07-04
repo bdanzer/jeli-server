@@ -1,3 +1,4 @@
+const { composeWithMongoose } = require("graphql-compose-mongoose");
 const mongoose = require("mongoose");
 
 // "userId": 1,
@@ -21,34 +22,35 @@ const mongoose = require("mongoose");
 //warm up, Weight Lifting, Cardio
 
 const workoutSchema = new mongoose.Schema(
-    {
-        name: { type: String, required: true },
-        description: { type: String, required: true },
-        workoutType: { type: String, required: true },
-        isPublic: { type: Boolean, required: true },
-        restPeriods: { type: Number, required: true },
-        exercises: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Exercise",
-                required: true,
-            },
-        ],
-        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    },
-    { timestamps: true }
+  {
+    name: { type: String, required: true },
+    description: { type: String, required: true },
+    workoutType: { type: String, required: true },
+    isPublic: { type: Boolean, required: true },
+    restPeriods: { type: Number, required: true },
+    exercises: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Exercise",
+        required: true,
+      },
+    ],
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  },
+  { timestamps: true }
 );
 
 workoutSchema.statics.search = async function (workoutName) {
-    const workout = await this.find({
-        name: {
-            $regex: new RegExp("^" + workoutName.toLowerCase(), "i"),
-        },
-    });
+  const workout = await this.find({
+    name: {
+      $regex: new RegExp("^" + workoutName.toLowerCase(), "i"),
+    },
+  });
 
-    return workout;
+  return workout;
 };
 
 const workout = mongoose.model("Workout", workoutSchema);
+const WorkoutTC = composeWithMongoose(workout);
 
-module.exports = workout;
+module.exports = { workout, WorkoutTC };

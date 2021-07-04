@@ -1,32 +1,32 @@
 const users = [
-    {
-        userId: 1,
-        username: "bdanzer",
-        email: "britt.danzer@gmail.com",
-        firstName: "Britt",
-        lastName: "Danzer",
-        role: "admin",
-        locale: "US",
-        fitnessInfo: {
-            weight: {
-                metric: "thing",
-                value: 182,
-            },
-            height: {
-                metric: "imperial",
-                feet: "5",
-                inches: "4",
-            },
-        },
-        userSettings: {
-            goalView: "relays",
-            preferredColor: "#000",
-            preferredTheme: "light",
-            preferredMetric: "ibs", // us or uk
-            turnOnInspiringQuotes: true,
-        },
-        jwt: null,
+  {
+    userId: 1,
+    username: "bdanzer",
+    email: "britt.danzer@gmail.com",
+    firstName: "Britt",
+    lastName: "Danzer",
+    role: "admin",
+    locale: "US",
+    fitnessInfo: {
+      weight: {
+        metric: "thing",
+        value: 182,
+      },
+      height: {
+        metric: "imperial",
+        feet: "5",
+        inches: "4",
+      },
     },
+    userSettings: {
+      goalView: "relays",
+      preferredColor: "#000",
+      preferredTheme: "light",
+      preferredMetric: "ibs", // us or uk
+      turnOnInspiringQuotes: true,
+    },
+    jwt: null,
+  },
 ];
 
 export default users;

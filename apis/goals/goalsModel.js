@@ -16,25 +16,25 @@ const mongoose = require("mongoose");
 //need to use discriminators to change different categories
 
 const goalSchema = new mongoose.Schema(
-    {
-        startingDate: {type: String, required: true},
-        projectedEndDate: {type: String},
-        goalCategory: {type: String, required: true},
-        goalMeta: {type: Object, required: true},
-        weeksToCompletion: {type: String},
-        user: {type: mongoose.Schema.Types.ObjectId, ref: "User"}
-    },
-    {timestamps: true}
+  {
+    startingDate: { type: String, required: true },
+    projectedEndDate: { type: String },
+    goalCategory: { type: String, required: true },
+    goalMeta: { type: Object, required: true },
+    weeksToCompletion: { type: String },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  },
+  { timestamps: true }
 );
 
 goalSchema.statics.search = async function (goalName) {
-    const goal = await this.find({
-        name: {
-            $regex: new RegExp("^" + goalName.toLowerCase(), "i")
-        }
-    });
+  const goal = await this.find({
+    name: {
+      $regex: new RegExp("^" + goalName.toLowerCase(), "i"),
+    },
+  });
 
-    return goal;
+  return goal;
 };
 
 const Goal = mongoose.model("Goal", goalSchema);
