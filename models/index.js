@@ -1,16 +1,18 @@
 const mongoose = require("mongoose");
 
 const User = require("../apis/users/userModel");
-const Product = require("../apis/nutrition/products/productsModel");
+const { Product } = require("../apis/nutrition/products/productsModel");
 const Recipe = require("../apis/nutrition/recipes/recipesModel");
 const { Exercise } = require("../apis/exercises/exerciseModel");
 const Workout = require("../apis/workouts/workoutsModel");
 const { ExerciseLog } = require("../apis/logs/logsModel");
 const { Program } = require("../apis/programs/programsModel");
-const NutritionLog = require("../apis/nutrition/nutritionLogs/nutritionLogsModel");
+const {
+  NutritionLog,
+} = require("../apis/nutrition/nutritionLogs/nutritionLogsModel");
 const Goal = require("../apis/goals/goalsModel");
 const Session = require("../apis/sessions/sessionsModel");
-const Meal = require("../apis/nutrition/meals/mealsModel");
+const { Meal } = require("../apis/nutrition/meals/mealsModel");
 
 let dbConnect;
 const dbName = "jeli";

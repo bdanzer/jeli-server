@@ -1,3 +1,4 @@
+const { composeWithMongoose } = require("graphql-compose-mongoose");
 const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema(
@@ -31,4 +32,23 @@ productSchema.statics.search = async function (productName) {
 
 const Product = mongoose.model("Product", productSchema);
 
-module.exports = Product;
+const ProductTC = composeWithMongoose(Product);
+
+ProductTC.addResolver({
+  name: "productSearch",
+  kind: "query",
+  args: { name: "String" },
+  type: [ProductTC],
+  resolve: async ({ source, args }) => {
+    const products = await Product.find({
+      name: {
+        $regex: new RegExp(args.name.toLowerCase(), "i"),
+      },
+    }).exec();
+
+    if (!products) throw new Error("found nothing");
+    return products;
+  },
+});
+
+module.exports = { Product, ProductTC };

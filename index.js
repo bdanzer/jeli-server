@@ -33,6 +33,8 @@ const importNutrition = require("./apis/nutrition/import/import");
 const paypal = require("./apis/payments/paypal/paypal");
 const { ExerciseLog } = require("./apis/logs/logsModel");
 const IPNController = require("./client/IPN");
+const NutritionAPI = require("./dataSources");
+const { resolvers } = require("./resolvers");
 
 require("./services/aws");
 
@@ -138,13 +140,21 @@ async function startApolloServer() {
   //     res.status(500).send(`Can't find ${req.originalUrl} on this server!`);
   //   });
 
+  // trackapi.nutritionix.com/v2/search/item?upc=022000159335
+  // auth: 7131a55c - 0f50f4755d0067d4d11aa63921b6e318
+
   const port = process.env.PORT || 3003;
   const server = new ApolloServer({
-    schema: graphqlSchemas,
+    // typeDefs: graphqlSchemas.typeDefs,
+    schema: graphqlSchemas.graphqlSchema,
     context: ({ req }) => ({
       getUser: () => req.user,
       logout: () => req.logout(),
     }),
+    dataSources: () => ({
+      nutrition: new NutritionAPI(),
+    }),
+    resolvers,
   });
   await server.start();
   server.applyMiddleware({ app });

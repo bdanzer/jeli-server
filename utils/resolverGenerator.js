@@ -36,15 +36,14 @@ const resolvers = (prefix, resolverArray, model) => {
   return resolverObj;
 };
 
-const resolverGenerator = (
-  prefix,
-  model,
-  options = {
-    queries: [],
-    mutations: [],
-  }
-) => {
+const defaultOptions = {
+  queries: [],
+  mutations: [],
+};
+
+const resolverGenerator = (prefix, model, options = {}) => {
   const mergedOptions = {
+    ...defaultOptions,
     ...options,
   };
 
@@ -58,7 +57,6 @@ const resolverGenerator = (
     [...resolversMutations, ...mergedOptions.mutations],
     model
   );
-  console.log("queryResolvers", queryResolvers);
   return { queryResolvers, mutationResolvers };
 };
 
