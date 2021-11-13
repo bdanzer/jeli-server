@@ -3,6 +3,9 @@ import NutritionAPI from "../dataSources";
 import graphqlSchemas from "../schemas";
 import mongoose from 'mongoose';
 import { OAuth2Client } from 'google-auth-library'
+import httpHeadersPlugin from "apollo-server-plugin-http-headers";
+import cookie from 'cookie'
+import jwt from 'jsonwebtoken'
 
 const NODE_ENV = process.env.NODE_ENV;
 const GoogleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
@@ -25,41 +28,57 @@ console.log(dbConnect);
 
 const connectDb = () => mongoose.connect(dbConnect[env]);
 
-export default (event, context, callback) => {
-  connectDb().then(() => {
-    const apolloServer = new ApolloServer({
-      // subscriptions: {},
-      introspection: true,
-      schema: graphqlSchemas,
-      context: async ({ event, context }) => {
-        const headers = event.headers
-        const googleToken = headers?.['GoogleToken']
-        const ticket = await GoogleClient.verifyIdToken({ idToken: googleToken, audience: process.env.GOOGLE_CLIENT_ID })
-        const payload = ticket.getPayload()
-        const userId = payload['sub']
+export default async (event, context, callback) => {
+  await connectDb()
+  console.log('this is called')
+  const apolloServer = new ApolloServer({
+    // subscriptions: {},
+    introspection: true,
+    schema: graphqlSchemas,
+    plugins: [httpHeadersPlugin],
+    context: async ({ event, context, express }) => {
+      const headers = event.headers
 
-        console.log('userId', userId)
+      console.log('headers', headers)
+      const cookies = headers.Cookie ? cookie.parse(headers.Cookie) : null
+      console.log('cookies', express.req.cookies, cookies)
 
-        return {
-          headers,
-          functionName: context.functionName,
-          event,
-          context,
-        }
-      },
-      playground: {
-        endpoint: "/dev/graphql"
-      },
-      dataSources: () => ({
-        nutrition: new NutritionAPI(),
-      }),
-    });
+      let isUserAuthd: any;
 
-    apolloServer.createHandler({
+      try {
+        isUserAuthd = jwt.verify(cookies?.userAuth, process.env.JWT_SECRET)
+      } catch (e) {
+        isUserAuthd = false
+      }
+
+      console.log('isUserAuthd', isUserAuthd)
+
+      return {
+        googleClient: GoogleClient,
+        headers,
+        isUserAuthd,
+        functionName: context.functionName,
+        event,
+        context,
+        setCookies: new Array(),
+        setHeaders: new Array(),
+        expressReq: express.req,
+        expressRes: express.res
+      }
+    },
+    dataSources: () => ({
+      nutrition: new NutritionAPI(),
+    }),
+  });
+
+  console.log('graph handler called')
+
+  return apolloServer.createHandler({
+    expressGetMiddlewareOptions: {
       cors: {
-        origin: true,
+        origin: ['http://localhost:8080', 'https://studio.apollographql.com'],
         credentials: true,
       },
-    })(event, context, callback)
-  })
+    }
+  })(event, context, callback)
 };

@@ -1,6 +1,8 @@
 import { composeWithMongoose } from "graphql-compose-mongoose";
 import { Schema, model } from "mongoose";
 import { genSalt, hash as _hash, compare } from "bcrypt";
+import moment from 'moment'
+import jwt from 'jsonwebtoken'
 const SALT_WORK_FACTOR = 10;
 
 const userSchema = new Schema(
@@ -148,24 +150,132 @@ export const UserTC = composeWithMongoose(User, {
 });
 
 UserTC.addResolver({
-  name: "userLogin",
-  kind: "mutation",
-  args: { dateFrom: "String", dateTo: "String" },
+  name: "getUser",
+  kind: "query",
   type: UserTC,
   resolve: async ({ source, args, context }) => {
-    console.log('dates', args.dateFrom, args.dateTo);
-    const userData = (await req.context.models.User.findById(req.user)) || null;
+    const { googleClient, headers, setCookies, isUserAuthd } = context;
+
+    console.log('isUSerAuthd in getUSer', isUserAuthd)
+
+    const userData = (await User.findOne({ email: isUserAuthd?.data?.email })) || null;
 
     if (userData) {
-      return {
-        status: "success",
-        data: userData,
-      };
+      setCookies.push({
+        name: "userAuth",
+        value: jwt.sign({
+          data: userData
+        }, process.env.JWT_SECRET, { expiresIn: 60 * 60 }),
+        options: {
+          httpOnly: true,
+          maxAge: 3600,
+          path: "/",
+          sameSite: 'none',
+          secure: true
+        }
+      });
+      return userData
     }
 
-    return {
-      status: "failed",
-      data: null,
-    };
+    throw new Error('No User Account Exist')
+  },
+});
+
+UserTC.addResolver({
+  name: "userSetup",
+  kind: "mutation",
+  args: {
+    role: "String!",
+    weight: "Float!",
+    height: "Float!",
+    bodyFat: "Float",
+    userActivity: "String",
+    sex: "String!",
+    dateOfBirth: "String!",
+    timezone: "String!",
+    preferredTheme: "String",
+    preferredMetric: "String"
+  },
+  type: UserTC,
+  resolve: async ({ source, args, context }) => {
+    const { role, weight, height, bodyFat, userActivity, sex, dateOfBirth, timezone, preferredTheme, preferredMetric } = args;
+    const { googleClient, headers, setCookies, isUserAuthd } = context;
+    const userData = (await User.findOneAndUpdate({ email: isUserAuthd?.data?.email }, {
+      role,
+      setUpComplete: true,
+      fitnessInfo: {
+        weight,
+        height,
+        bodyFat,
+        userActivity,
+        sex
+      },
+      userSettings: {
+        dateOfBirth,
+        timezone,
+        preferredTheme: "default",
+        preferredMetric,
+      },
+    }, { new: true })) || null;
+
+    if (userData) {
+      setCookies.push({
+        name: "userAuth",
+        value: jwt.sign({
+          data: userData
+        }, process.env.JWT_SECRET, { expiresIn: 60 * 60 }),
+        options: {
+          // expires: moment().add(1, 'hours').format(),
+          httpOnly: true,
+          maxAge: 3600,
+          path: "/",
+          sameSite: 'none',
+          secure: true
+        }
+      });
+      return userData
+    }
+
+    throw new Error('No User Account Exists')
+  },
+});
+
+UserTC.addResolver({
+  name: "userLogin",
+  kind: "mutation",
+  args: { googleToken: "String" },
+  type: UserTC,
+  resolve: async ({ source, args, context }) => {
+    const { googleToken } = args;
+    console.log('google TOken given', googleToken)
+    const { googleClient, headers, setCookies } = context;
+    // console.log(headers, process.env)
+    const ticket = await googleClient.verifyIdToken({ idToken: googleToken, audience: process.env.GOOGLE_CLIENT_ID })
+    const payload = ticket.getPayload()
+    const userId = payload['sub']
+    const email = payload['email']
+    console.log('userId', userId, email)
+
+    const userData = (await User.findOne({ email })) || null;
+
+    if (userData) {
+      setCookies.push({
+        name: "userAuth",
+        value: jwt.sign({
+          data: userData
+        }, process.env.JWT_SECRET, { expiresIn: 60 * 60 }),
+        options: {
+          // expires: moment().add(1, 'hours').format(),
+          httpOnly: true,
+          maxAge: 3600,
+          path: "/",
+          sameSite: 'none',
+          secure: true
+        }
+      });
+      return userData
+    }
+
+    throw new Error('No User Account Exist Yet')
   },
 });

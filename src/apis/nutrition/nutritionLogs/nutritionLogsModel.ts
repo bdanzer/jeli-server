@@ -5,84 +5,26 @@ import moment from 'moment';
 
 const nutritionLogSchema = new Schema(
   {
-    meal1: {
-      data: [
-        {
-          product: {
-            type: Schema.Types.ObjectId,
-            ref: "Product",
-          },
-          modifier: {
-            type: Number,
-          },
-        },
-      ],
+    templateName: {
+      type: Schema.Types.String
     },
-    snack1: {
-      data: [
-        {
-          product: {
-            type: Schema.Types.ObjectId,
-            ref: "Product",
-          },
-          modifier: {
-            type: Number,
-          },
+    template: [
+      {
+        name: {
+          type: Schema.Types.String
         },
-      ],
-    },
-    meal2: {
-      data: [
-        {
-          product: {
-            type: Schema.Types.ObjectId,
-            ref: "Product",
+        data: [
+          {
+            product: {
+              type: Schema.Types.ObjectId,
+              ref: "Product",
+            },
+            modifier: {
+              type: Number,
+            },
           },
-          modifier: {
-            type: Number,
-          },
-        },
-      ],
-    },
-    snack2: {
-      data: [
-        {
-          product: {
-            type: Schema.Types.ObjectId,
-            ref: "Product",
-          },
-          modifier: {
-            type: Number,
-          },
-        },
-      ],
-    },
-    meal3: {
-      data: [
-        {
-          product: {
-            type: Schema.Types.ObjectId,
-            ref: "Product",
-          },
-          modifier: {
-            type: Number,
-          },
-        },
-      ],
-    },
-    snack3: {
-      data: [
-        {
-          product: {
-            type: Schema.Types.ObjectId,
-            ref: "Product",
-          },
-          modifier: {
-            type: Number,
-          },
-        },
-      ],
-    },
+        ],
+      }],
     user: {
       type: Schema.Types.ObjectId,
       ref: "User",
@@ -123,7 +65,18 @@ NutritionLogTC.addResolver({
   kind: "query",
   args: { dateFrom: "String", dateTo: "String" },
   type: [NutritionLogTC],
-  resolve: async ({ source, args }) => {
+  resolve: async ({ source, args, context }) => {
+    const { isUserAuthd } = context
+
+    if (!isUserAuthd) {
+      throw new Error('User is not authorized')
+    }
+
+    const userId = isUserAuthd?.data?._id
+    if (!userId) {
+      throw new Error('No User ID provided')
+    }
+
     console.log('dates', args.dateFrom, args.dateTo);
     const nutritionLogs = await NutritionLog
       .find({
@@ -132,6 +85,7 @@ NutritionLogTC.addResolver({
           $gte: moment(args.dateFrom).startOf("day"),
           $lte: moment(args.dateTo).endOf("day"),
         },
+        user: userId
       })
 
     console.log('nutritionLogs', JSON.stringify(nutritionLogs, null, 4));
@@ -145,12 +99,15 @@ NutritionLogTC.addResolver({
 });
 
 NutritionLogTC
-  .getFieldOTC('meal1')
+  .getFieldOTC('template')
   .getFieldOTC('data')
   .addRelation("product", {
     resolver: () => ProductTC.getResolver("findById"),
     prepareArgs: {
-      _id: (source) => source.product
+      _id: (source) => {
+        console.log('addRelation called', source)
+        return source.product
+      }
     },
     projection: {
       product: true

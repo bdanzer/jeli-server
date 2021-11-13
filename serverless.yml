@@ -1,5 +1,5 @@
 service:
-  name: aws-node-typescript-apollo-lambda
+  name: jeli-serverless
 
 plugins:
   - serverless-dotenv-plugin
@@ -8,11 +8,13 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs14.x
   timeout: 15
 
 functions:
   graphql:
+    environment:
+      SLS_DEBUG: true
     handler: src/handler.graphqlHandler
     events:
       - http:
