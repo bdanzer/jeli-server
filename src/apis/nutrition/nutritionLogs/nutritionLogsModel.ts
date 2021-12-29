@@ -99,6 +99,8 @@ NutritionLogTC.addResolver({
 });
 
 NutritionLogTC
+
+NutritionLogTC
   .getFieldOTC('template')
   .getFieldOTC('data')
   .addRelation("product", {

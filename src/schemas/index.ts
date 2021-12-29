@@ -1,11 +1,11 @@
 import { schemaComposer } from "graphql-compose";
-import { ProgramQuery, ProgramMutation } from "../apis/programs/programsGraphSchema";
-import { ExerciseQuery, ExerciseMutation } from "../apis/exercises/exerciseGraphSchema";
-import { ExerciseLogGraph } from "../apis/logs/logGraphSchema";
-import { MealGraph } from "../apis/nutrition/meals/mealGraphSchema";
-import { ProductGraph } from "../apis/nutrition/products/productsGraphSchema";
-import { NutritionLogsGraph } from "../apis/nutrition/nutritionLogs/nutritionLogsGraphSchema";
-import { UserGraph } from '../apis/users/usersGraphSchema'
+import { ProgramQuery, ProgramMutation } from "./programsGraphSchema";
+import { ExerciseQuery, ExerciseMutation } from "./exerciseGraphSchema";
+import { ExerciseLogGraph } from "./logGraphSchema";
+import { MealGraph } from "./mealGraphSchema";
+import { ProductGraph } from "./productsGraphSchema";
+import { NutritionLogsGraph } from "./nutritionLogsGraphSchema";
+import { UserGraph } from './usersGraphSchema'
 import typeDefs from "../graphql/type-defs";
 import * as queries from "../graphql/resolvers/queries";
 import * as mutations from "../graphql/resolvers/mutations";
