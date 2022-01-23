@@ -6,6 +6,7 @@ import { OAuth2Client } from 'google-auth-library'
 import httpHeadersPlugin from "apollo-server-plugin-http-headers";
 import cookie from 'cookie'
 import jwt from 'jsonwebtoken'
+import { PrismaClient } from '@prisma/client';
 
 const NODE_ENV = process.env.NODE_ENV;
 const GoogleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
@@ -27,9 +28,10 @@ const env = "dev";
 console.log(dbConnect);
 
 const connectDb = () => mongoose.connect(dbConnect[env]);
+const prismaClient = new PrismaClient();
 
 export default async (event, context, callback) => {
-  await connectDb()
+  // await connectDb()
   console.log('this is called')
   const apolloServer = new ApolloServer({
     // subscriptions: {},
@@ -54,6 +56,7 @@ export default async (event, context, callback) => {
       console.log('isUserAuthd', isUserAuthd)
 
       return {
+        prismaClient,
         googleClient: GoogleClient,
         headers,
         isUserAuthd,

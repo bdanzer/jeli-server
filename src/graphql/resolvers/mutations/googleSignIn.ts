@@ -1,19 +1,56 @@
-async function GoogleSignIn(
+import { PrismaClient, User } from "@prisma/client";
+import jwt from 'jsonwebtoken'
+
+async function googleSignIn(
     _: any,
     { googleToken },
-    { headers, googleClient }
-): Promise<boolean> {
-    console.log(headers, process.env)
+    { googleClient, headers, setCookies, prismaClient }
+): Promise<User> {
+    console.log('google TOken given', googleToken)
+    // console.log(headers, process.env)
+    let ticket;
     try {
-        const ticket = await googleClient.verifyIdToken({ idToken: googleToken, audience: process.env.GOOGLE_CLIENT_ID })
-        const payload = ticket.getPayload()
-        const userId = payload['sub']
-        const email = payload['email']
-        console.log('userId', userId, email)
+        ticket = await googleClient.verifyIdToken({ idToken: googleToken, audience: process.env.GOOGLE_CLIENT_ID })
     } catch (e) {
-        throw new Error('INVALID_TOKEN')
+        throw new Error('Failed verifying google token')
     }
-    return true;
+    const payload = ticket.getPayload()
+    const userId = payload['sub']
+    const email = payload['email']
+    console.log('userId', userId, email)
+
+    let userData = (await (prismaClient as PrismaClient).user.findUnique({ where: {email} })) || null;
+    if (!userData) {
+        userData = await (prismaClient as PrismaClient).user.create({
+            data: {
+                email,
+                firstName: '',
+                lastName: '',
+                setUpComplete: false,
+                role: 'NEW_USER'
+            }
+        })
+    }
+
+    if (userData) {
+      setCookies.push({
+        name: "userAuth",
+        value: jwt.sign({
+          data: userData
+        }, process.env.JWT_SECRET, { expiresIn: 60 * 60 }),
+        options: {
+          // expires: moment().add(1, 'hours').format(),
+          httpOnly: true,
+          maxAge: 3600,
+          path: "/",
+          sameSite: 'none',
+          secure: true
+        }
+      });
+      return userData
+    }
+
+    throw new Error('No User Account Exist Yet')
 }
 
-export default GoogleSignIn;
+export default googleSignIn;

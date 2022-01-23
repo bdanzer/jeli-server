@@ -2,8 +2,9 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "rhel-openssl-1.0.x"]
+  provider        = "prisma-client-js"
+  binaryTargets   = ["native", "rhel-openssl-1.0.x"]
+  previewFeatures = ["filterJson"]
 }
 
 datasource db {
@@ -15,7 +16,7 @@ model User {
   id            Int     @id @default(autoincrement())
   firstName     String
   lastName      String
-  email         String
+  email         String  @unique
   setUpComplete Boolean
   role          String
 
@@ -46,10 +47,11 @@ model User {
   exercsiseLogs         ExercsiseLog[]
   meals                 Meal[]
   exercises             Exercise[]
+  programs              Programs[]
 }
 
 model Exercise {
-  id                  Int      @id @default(autoincrement())
+  id                  Int       @id @default(autoincrement())
   exerciseName        String
   exerciseType        String
   exerciseDescription String
@@ -59,6 +61,8 @@ model Exercise {
   frontMuscles        String[]
   backMuscles         String[]
   instructions        String
+  createdAt           DateTime? @default(now())
+  updatedAt           DateTime?
 
   //Relations
   user          User           @relation(fields: [userId], references: [id])
@@ -69,7 +73,7 @@ model Exercise {
 }
 
 model Product {
-  id              Int    @id @default(autoincrement())
+  id              Int     @id @default(autoincrement())
   name            String
   brand           String
   calories        Float
@@ -79,9 +83,9 @@ model Product {
   dietType        String
   measurementType String
   productType     String
-  amazonAffiliate String
   servingSize     Float
   servings        Float
+  amazonAffiliate String?
 
   //General
   createdAt DateTime  @default(now())
@@ -93,7 +97,9 @@ model Product {
 }
 
 model Meal {
-  id Int @id @default(autoincrement())
+  id       Int    @id @default(autoincrement())
+  products Json[]
+  name     String
 
   //Relations
   user   User @relation(fields: [userId], references: [id])
@@ -103,6 +109,10 @@ model Meal {
 model NutritionLog {
   id Int @id @default(autoincrement())
 
+  loggedMeals Json[]
+  createdAt   DateTime? @default(now())
+  updatedAt   DateTime?
+
   //Relations
   template               NutritionLogTemplate @relation(fields: [nutritionLogTemplateId], references: [id])
   nutritionLogTemplateId Int                  @unique
@@ -111,8 +121,9 @@ model NutritionLog {
 }
 
 model NutritionLogTemplate {
-  id           Int           @id @default(autoincrement())
-  nutritionLog NutritionLog?
+  id                Int           @id @default(autoincrement())
+  nutritionLog      NutritionLog?
+  templateStructure Json[]
 
   //Relations
   user   User @relation(fields: [userId], references: [id])
@@ -125,6 +136,7 @@ model ExercsiseLog {
   reps      Int
   weight    Float
   createdAt DateTime? @default(now())
+  updatedAt DateTime?
 
   // Relations
   exercise   Exercise @relation(fields: [exerciseId], references: [id])
@@ -136,8 +148,10 @@ model ExercsiseLog {
 }
 
 model Session {
-  id         Int     @id @default(autoincrement())
-  inProgress Boolean @default(true)
+  id         Int       @id @default(autoincrement())
+  inProgress Boolean   @default(true)
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime?
 
   //Relations
   user         User?          @relation(fields: [userId], references: [id])
@@ -147,7 +161,12 @@ model Session {
 }
 
 model Programs {
-  id Int @id @default(autoincrement())
+  id   Int    @id @default(autoincrement())
+  name String
+
+  //Relations
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
 }
 
 enum PaidStatus {

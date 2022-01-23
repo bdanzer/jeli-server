@@ -256,26 +256,32 @@ UserTC.addResolver({
     const email = payload['email']
     console.log('userId', userId, email)
 
-    const userData = (await User.findOne({ email })) || null;
+    try {
+      const userData = (await User.findOne({
+        where: { email }
+      })) || null;
 
-    if (userData) {
-      setCookies.push({
-        name: "userAuth",
-        value: jwt.sign({
-          data: userData
-        }, process.env.JWT_SECRET, { expiresIn: 60 * 60 }),
-        options: {
-          // expires: moment().add(1, 'hours').format(),
-          httpOnly: true,
-          maxAge: 3600,
-          path: "/",
-          sameSite: 'none',
-          secure: true
-        }
-      });
-      return userData
-    }
+      if (userData) {
+        setCookies.push({
+          name: "userAuth",
+          value: jwt.sign({
+            data: userData
+          }, process.env.JWT_SECRET, { expiresIn: 60 * 60 }),
+          options: {
+            // expires: moment().add(1, 'hours').format(),
+            httpOnly: true,
+            maxAge: 3600,
+            path: "/",
+            sameSite: 'none',
+            secure: true
+          }
+        });
+        return userData
+      }
+  } catch (e) {
+    throw new Error('No User Account Exist Yet') 
+  }
 
     throw new Error('No User Account Exist Yet')
-  },
+  }
 });
