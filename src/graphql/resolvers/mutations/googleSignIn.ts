@@ -1,4 +1,4 @@
-import { PrismaClient, User } from "@prisma/client";
+import { User } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import { ApolloContext } from "../../../@types/apolloContext";
 

@@ -1,9 +1,16 @@
-import { NutritionLog, PrismaClient } from "@prisma/client";
+import { NutritionLog } from "@prisma/client";
+import { ApolloContext } from "../../../@types/apolloContext";
 
 export const addNutritionLog = async (
   _: any,
   { loggedMeals, nutritionLogTemplateId },
-  { googleClient, prismaClient, headers, setCookies, isUserAuthd }
+  {
+    googleClient,
+    prismaClient,
+    headers,
+    setCookies,
+    isUserAuthd,
+  }: ApolloContext
 ): Promise<NutritionLog> => {
   console.log("USER AUTHD", isUserAuthd);
   if (!isUserAuthd) {
@@ -11,15 +18,13 @@ export const addNutritionLog = async (
   }
   const userId = isUserAuthd?.data?.id;
 
-  const nutritionLog = await (prismaClient as PrismaClient).nutritionLog.create(
-    {
-      data: {
-        loggedMeals: {},
-        nutritionLogTemplateId: 1,
-        userId,
-      },
-    }
-  );
+  const nutritionLog = await prismaClient.nutritionLog.create({
+    data: {
+      loggedMeals: {},
+      nutritionLogTemplateId: 1,
+      userId,
+    },
+  });
 
   return nutritionLog;
 };

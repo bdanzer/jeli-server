@@ -1,4 +1,5 @@
-import { PrismaClient, Product } from "@prisma/client";
+import { Product } from "@prisma/client";
+import { ApolloContext } from "../../../@types/apolloContext";
 
 export const addProduct = async (
   _: any,
@@ -15,7 +16,13 @@ export const addProduct = async (
     servingSize,
     servings,
   },
-  { googleClient, prismaClient, headers, setCookies, isUserAuthd }
+  {
+    googleClient,
+    prismaClient,
+    headers,
+    setCookies,
+    isUserAuthd,
+  }: ApolloContext
 ): Promise<Product> => {
   console.log("USER AUTHD", isUserAuthd);
   if (!isUserAuthd) {
@@ -23,7 +30,7 @@ export const addProduct = async (
   }
   const userId = isUserAuthd?.data?.id;
 
-  const product = await (prismaClient as PrismaClient).product.create({
+  const product = await prismaClient.product.create({
     data: {
       name,
       brand,

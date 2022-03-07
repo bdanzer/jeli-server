@@ -1,14 +1,21 @@
-import { PrismaClient, User } from "@prisma/client";
+import { User } from "@prisma/client";
 import jwt from "jsonwebtoken";
+import { ApolloContext } from "../../../@types/apolloContext";
 
 export async function getUser(
   _: any,
   { googleToken },
-  { headers, googleClient, prismaClient, isUserAuthd, setCookies }
+  {
+    headers,
+    googleClient,
+    prismaClient,
+    isUserAuthd,
+    setCookies,
+  }: ApolloContext
 ): Promise<User> {
   console.log("isUSerAuthd in getUSer", isUserAuthd);
 
-  const userData = await (prismaClient as PrismaClient).user.findUnique({
+  const userData = await prismaClient.user.findUnique({
     where: {
       email: isUserAuthd?.data?.email,
     },
