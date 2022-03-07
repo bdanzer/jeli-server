@@ -14,4 +14,4 @@ const productTypeDef = `
   }
 `;
 
-export default productTypeDef
+export default productTypeDef;

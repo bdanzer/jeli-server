@@ -1,4 +1,4 @@
-const passport = require('passport');
+const passport = require("passport");
 module.exports.resolvers = {
   Query: {},
   Mutation: {
@@ -16,16 +16,15 @@ module.exports.resolvers = {
       const nutritionItem = await dataSources.nutrition.searchByUPC({ upc });
       return nutritionItem;
     },
-    authGoogle: async () => {
-
-    },
+    authGoogle: async () => {},
     google: async () => {
       passport.authenticate("google", {
         scope: ["profile", "email"],
-      })
+      });
     },
-    logIn: async (_, {token}, {res, req}) => {
-      const userData = (await req.context.models.User.findById(req.user)) || null;
+    logIn: async (_, { token }, { res, req }) => {
+      const userData =
+        (await req.context.models.User.findById(req.user)) || null;
 
       if (userData) {
         return {
@@ -33,7 +32,7 @@ module.exports.resolvers = {
           data: userData,
         };
       }
-          
+
       return {
         status: "failed",
         data: null,
@@ -49,17 +48,17 @@ module.exports.resolvers = {
         failureRedirect: "/errors",
         session: true,
       }),
-      function (req, res) {
-        if (req.user) {
-          console.log(req.user);
-          res.cookie("token", req.user);
-          // console.log('session', req.session);
-          return res.redirect("http://localhost:8080/dashboard");
-        } else {
-          console.log("error");
-          return res.redirect("http://localhost:8080/errors");
-        }
-      }
-    }
+        function (req, res) {
+          if (req.user) {
+            console.log(req.user);
+            res.cookie("token", req.user);
+            // console.log('session', req.session);
+            return res.redirect("http://localhost:8080/dashboard");
+          } else {
+            console.log("error");
+            return res.redirect("http://localhost:8080/errors");
+          }
+        };
+    },
   },
 };

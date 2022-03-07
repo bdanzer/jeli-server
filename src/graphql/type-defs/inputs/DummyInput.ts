@@ -62,4 +62,4 @@ const test = `
     createdAt: Date!
     updatedAt: Date!
   }
-`
+`;

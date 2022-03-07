@@ -17,34 +17,34 @@ export const addProduct = async (
   },
   { googleClient, prismaClient, headers, setCookies, isUserAuthd }
 ): Promise<Product> => {
-    console.log('USER AUTHD', isUserAuthd)
-    if (!isUserAuthd) {
-        throw new Error('USER UNAUTHORIZED');
-    }
-    const userId = isUserAuthd?.data?.id;
+  console.log("USER AUTHD", isUserAuthd);
+  if (!isUserAuthd) {
+    throw new Error("USER UNAUTHORIZED");
+  }
+  const userId = isUserAuthd?.data?.id;
 
-    const product = await (prismaClient as PrismaClient).product.create({
-        data: {
-            name,
-            brand,
-            calories,
-            carbs,
-            fat,
-            protein,
-            dietType,
-            measurementType,
-            productType,
-            servingSize,
-            servings,
-            userId
-        }
-    })
+  const product = await (prismaClient as PrismaClient).product.create({
+    data: {
+      name,
+      brand,
+      calories,
+      carbs,
+      fat,
+      protein,
+      dietType,
+      measurementType,
+      productType,
+      servingSize,
+      servings,
+      userId,
+    },
+  });
 
-    return product;
+  return product;
 
-    // return await (prismaClient as PrismaClient).product.findMany({
-    //     where: {
-    //         userId
-    //     }
-    // })
+  // return await (prismaClient as PrismaClient).product.findMany({
+  //     where: {
+  //         userId
+  //     }
+  // })
 };

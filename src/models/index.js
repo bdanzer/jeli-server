@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const {User} = require("../apis/users/userModel").default;
+const { User } = require("../apis/users/userModel").default;
 const { Product } = require("../apis/nutrition/products/productsModel").default;
 const Recipe = require("../apis/nutrition/recipes/recipesModel").default;
 const { Exercise } = require("../apis/exercises/exerciseModel");

@@ -1,6 +1,6 @@
 async function searchNutritionBrand(_, { query }, { dataSources }) {
-    const nutrition = await dataSources.nutrition.searchBrand({ query });
-    return nutrition;
+  const nutrition = await dataSources.nutrition.searchBrand({ query });
+  return nutrition;
 }
 
 export default searchNutritionBrand;

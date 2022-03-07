@@ -1,17 +1,17 @@
 import { composeWithMongoose } from "graphql-compose-mongoose";
 import { Schema, model } from "mongoose";
 import { ProductTC } from "../products/productsModel";
-import moment from 'moment';
+import moment from "moment";
 
 const nutritionLogSchema = new Schema(
   {
     templateName: {
-      type: Schema.Types.String
+      type: Schema.Types.String,
     },
     template: [
       {
         name: {
-          type: Schema.Types.String
+          type: Schema.Types.String,
         },
         data: [
           {
@@ -24,7 +24,8 @@ const nutritionLogSchema = new Schema(
             },
           },
         ],
-      }],
+      },
+    ],
     user: {
       type: Schema.Types.ObjectId,
       ref: "User",
@@ -59,59 +60,56 @@ NutritionLogTC.addResolver({
   },
 });
 
-
 NutritionLogTC.addResolver({
   name: "nutritionLogByDate",
   kind: "query",
   args: { dateFrom: "String", dateTo: "String" },
   type: [NutritionLogTC],
   resolve: async ({ source, args, context }) => {
-    const { isUserAuthd } = context
+    const { isUserAuthd } = context;
 
     if (!isUserAuthd) {
-      throw new Error('User is not authorized')
+      throw new Error("User is not authorized");
     }
 
-    const userId = isUserAuthd?.data?._id
+    const userId = isUserAuthd?.data?._id;
     if (!userId) {
-      throw new Error('No User ID provided')
+      throw new Error("No User ID provided");
     }
 
-    console.log('dates', args.dateFrom, args.dateTo);
-    const nutritionLogs = await NutritionLog
-      .find({
-        //query today up to tonight
-        createdAt: {
-          $gte: moment(args.dateFrom).startOf("day"),
-          $lte: moment(args.dateTo).endOf("day"),
-        },
-        user: userId
-      })
+    console.log("dates", args.dateFrom, args.dateTo);
+    const nutritionLogs = await NutritionLog.find({
+      //query today up to tonight
+      createdAt: {
+        $gte: moment(args.dateFrom).startOf("day"),
+        $lte: moment(args.dateTo).endOf("day"),
+      },
+      user: userId,
+    });
 
-    console.log('nutritionLogs', JSON.stringify(nutritionLogs, null, 4));
+    console.log("nutritionLogs", JSON.stringify(nutritionLogs, null, 4));
 
     if (!nutritionLogs) {
-      throw new Error("NO_NUTRITION_LOGS_FOUND");;
+      throw new Error("NO_NUTRITION_LOGS_FOUND");
     }
 
-    return nutritionLogs
+    return nutritionLogs;
   },
 });
 
-NutritionLogTC
+NutritionLogTC;
 
-NutritionLogTC
-  .getFieldOTC('template')
-  .getFieldOTC('data')
+NutritionLogTC.getFieldOTC("template")
+  .getFieldOTC("data")
   .addRelation("product", {
     resolver: () => ProductTC.getResolver("findById"),
     prepareArgs: {
       _id: (source) => {
-        console.log('addRelation called', source)
-        return source.product
-      }
+        console.log("addRelation called", source);
+        return source.product;
+      },
     },
     projection: {
-      product: true
+      product: true,
     }, // point fields in source object, which should be fetched from DB
   });

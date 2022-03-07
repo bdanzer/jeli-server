@@ -1,12 +1,12 @@
-import { gql } from 'apollo-server-lambda';
+import { gql } from "apollo-server-lambda";
 
-import { nutritionLogTypeDef } from './nutrition/nutrition';
+import { nutritionLogTypeDef } from "./nutrition/nutrition";
 // Objects
-import productTypeDef from './product/product';
+import productTypeDef from "./product/product";
 // Root types
-import Mutation from './root/Mutation'; // tslint:disable-line ordered-imports
-import Query from './root/Query'; // tslint:disable-line ordered-imports
-import userTypeDef from './user/user';
+import Mutation from "./root/Mutation"; // tslint:disable-line ordered-imports
+import Query from "./root/Query"; // tslint:disable-line ordered-imports
+import userTypeDef from "./user/user";
 
 const typeDefStrings = [
   userTypeDef,
@@ -18,6 +18,6 @@ const typeDefStrings = [
   Query,
 ];
 
-const typeDefs = typeDefStrings.join('');
+const typeDefs = typeDefStrings.join("");
 
 export default typeDefs;

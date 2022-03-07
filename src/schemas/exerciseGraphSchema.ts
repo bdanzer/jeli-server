@@ -21,4 +21,3 @@ export const ExerciseMutation = {
   exerciseRemoveOne: ExerciseTC.getResolver("removeOne"),
   exerciseRemoveMany: ExerciseTC.getResolver("removeMany"),
 };
-

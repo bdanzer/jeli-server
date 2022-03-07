@@ -5,7 +5,7 @@ import { ExerciseLogGraph } from "./logGraphSchema";
 import { MealGraph } from "./mealGraphSchema";
 import { ProductGraph } from "./productsGraphSchema";
 import { NutritionLogsGraph } from "./nutritionLogsGraphSchema";
-import { UserGraph } from './usersGraphSchema'
+import { UserGraph } from "./usersGraphSchema";
 import typeDefs from "../graphql/type-defs";
 import * as queries from "../graphql/resolvers/queries";
 import * as mutations from "../graphql/resolvers/mutations";
@@ -39,4 +39,4 @@ schemaComposer.addResolveMethods(resolvers);
 
 const graphqlSchema = schemaComposer.buildSchema();
 
-export default graphqlSchema
+export default graphqlSchema;

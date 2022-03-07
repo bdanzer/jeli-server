@@ -25,4 +25,4 @@ const userTypeDef = `
   }
 `;
 
-export default userTypeDef
+export default userTypeDef;

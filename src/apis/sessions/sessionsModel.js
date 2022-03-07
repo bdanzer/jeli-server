@@ -24,7 +24,6 @@ sessionSchema.statics.search = async function (sessionName) {
   return session;
 };
 
-
 const Session = mongoose.model("Session", sessionSchema);
 
-export default Session
+export default Session;

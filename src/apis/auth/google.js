@@ -1,6 +1,6 @@
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
-const {User} = require("../users/userModel").default;
+const { User } = require("../users/userModel").default;
 
 module.exports = () => {
   // Allowing passport to serialize and deserialize users into sessions

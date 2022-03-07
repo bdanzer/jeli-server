@@ -1,8 +1,8 @@
 import { composeWithMongoose } from "graphql-compose-mongoose";
 import { Schema, model } from "mongoose";
 import { genSalt, hash as _hash, compare } from "bcrypt";
-import moment from 'moment'
-import jwt from 'jsonwebtoken'
+import moment from "moment";
+import jwt from "jsonwebtoken";
 const SALT_WORK_FACTOR = 10;
 
 const userSchema = new Schema(
@@ -156,28 +156,33 @@ UserTC.addResolver({
   resolve: async ({ source, args, context }) => {
     const { googleClient, headers, setCookies, isUserAuthd } = context;
 
-    console.log('isUSerAuthd in getUSer', isUserAuthd)
+    console.log("isUSerAuthd in getUSer", isUserAuthd);
 
-    const userData = (await User.findOne({ email: isUserAuthd?.data?.email })) || null;
+    const userData =
+      (await User.findOne({ email: isUserAuthd?.data?.email })) || null;
 
     if (userData) {
       setCookies.push({
         name: "userAuth",
-        value: jwt.sign({
-          data: userData
-        }, process.env.JWT_SECRET, { expiresIn: 60 * 60 }),
+        value: jwt.sign(
+          {
+            data: userData,
+          },
+          process.env.JWT_SECRET,
+          { expiresIn: 60 * 60 }
+        ),
         options: {
           httpOnly: true,
           maxAge: 3600,
           path: "/",
-          sameSite: 'none',
-          secure: true
-        }
+          sameSite: "none",
+          secure: true,
+        },
       });
-      return userData
+      return userData;
     }
 
-    throw new Error('No User Account Exist')
+    throw new Error("No User Account Exist");
   },
 });
 
@@ -194,49 +199,69 @@ UserTC.addResolver({
     dateOfBirth: "String!",
     timezone: "String!",
     preferredTheme: "String",
-    preferredMetric: "String"
+    preferredMetric: "String",
   },
   type: UserTC,
   resolve: async ({ source, args, context }) => {
-    const { role, weight, height, bodyFat, userActivity, sex, dateOfBirth, timezone, preferredTheme, preferredMetric } = args;
-    const { googleClient, headers, setCookies, isUserAuthd } = context;
-    const userData = (await User.findOneAndUpdate({ email: isUserAuthd?.data?.email }, {
+    const {
       role,
-      setUpComplete: true,
-      fitnessInfo: {
-        weight,
-        height,
-        bodyFat,
-        userActivity,
-        sex
-      },
-      userSettings: {
-        dateOfBirth,
-        timezone,
-        preferredTheme: "default",
-        preferredMetric,
-      },
-    }, { new: true })) || null;
+      weight,
+      height,
+      bodyFat,
+      userActivity,
+      sex,
+      dateOfBirth,
+      timezone,
+      preferredTheme,
+      preferredMetric,
+    } = args;
+    const { googleClient, headers, setCookies, isUserAuthd } = context;
+    const userData =
+      (await User.findOneAndUpdate(
+        { email: isUserAuthd?.data?.email },
+        {
+          role,
+          setUpComplete: true,
+          fitnessInfo: {
+            weight,
+            height,
+            bodyFat,
+            userActivity,
+            sex,
+          },
+          userSettings: {
+            dateOfBirth,
+            timezone,
+            preferredTheme: "default",
+            preferredMetric,
+          },
+        },
+        { new: true }
+      )) || null;
 
     if (userData) {
       setCookies.push({
         name: "userAuth",
-        value: jwt.sign({
-          data: userData
-        }, process.env.JWT_SECRET, { expiresIn: 60 * 60 }),
+        value: jwt.sign(
+          {
+            data: userData,
+          },
+          process.env.JWT_SECRET,
+          { expiresIn: 60 * 60 }
+        ),
         options: {
           // expires: moment().add(1, 'hours').format(),
           httpOnly: true,
           maxAge: 3600,
           path: "/",
-          sameSite: 'none',
-          secure: true
-        }
+          sameSite: "none",
+          secure: true,
+        },
       });
-      return userData
+      return userData;
     }
 
-    throw new Error('No User Account Exists')
+    throw new Error("No User Account Exists");
   },
 });
 
@@ -247,41 +272,49 @@ UserTC.addResolver({
   type: UserTC,
   resolve: async ({ source, args, context }) => {
     const { googleToken } = args;
-    console.log('google TOken given', googleToken)
+    console.log("google TOken given", googleToken);
     const { googleClient, headers, setCookies } = context;
     // console.log(headers, process.env)
-    const ticket = await googleClient.verifyIdToken({ idToken: googleToken, audience: process.env.GOOGLE_CLIENT_ID })
-    const payload = ticket.getPayload()
-    const userId = payload['sub']
-    const email = payload['email']
-    console.log('userId', userId, email)
+    const ticket = await googleClient.verifyIdToken({
+      idToken: googleToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+    const userId = payload["sub"];
+    const email = payload["email"];
+    console.log("userId", userId, email);
 
     try {
-      const userData = (await User.findOne({
-        where: { email }
-      })) || null;
+      const userData =
+        (await User.findOne({
+          where: { email },
+        })) || null;
 
       if (userData) {
         setCookies.push({
           name: "userAuth",
-          value: jwt.sign({
-            data: userData
-          }, process.env.JWT_SECRET, { expiresIn: 60 * 60 }),
+          value: jwt.sign(
+            {
+              data: userData,
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: 60 * 60 }
+          ),
           options: {
             // expires: moment().add(1, 'hours').format(),
             httpOnly: true,
             maxAge: 3600,
             path: "/",
-            sameSite: 'none',
-            secure: true
-          }
+            sameSite: "none",
+            secure: true,
+          },
         });
-        return userData
+        return userData;
       }
-  } catch (e) {
-    throw new Error('No User Account Exist Yet') 
-  }
+    } catch (e) {
+      throw new Error("No User Account Exist Yet");
+    }
 
-    throw new Error('No User Account Exist Yet')
-  }
+    throw new Error("No User Account Exist Yet");
+  },
 });

@@ -27,11 +27,11 @@ const resolvers = (prefix, resolverArray, model) => {
   let resolverObj = {};
   resolverArray.forEach(
     (resolverType) =>
-    (resolverObj[
-      `${prefix}${capitalizeFirstLetter(
-        resolverType.key ? resolverType.key : resolverType.resolver
-      )}`
-    ] = model.getResolver(resolverType.resolver))
+      (resolverObj[
+        `${prefix}${capitalizeFirstLetter(
+          resolverType.key ? resolverType.key : resolverType.resolver
+        )}`
+      ] = model.getResolver(resolverType.resolver))
   );
   return resolverObj;
 };
