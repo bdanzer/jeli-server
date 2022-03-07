@@ -1,20 +1,17 @@
 import { gql } from 'apollo-server-lambda';
 
-// Inputs
-import DummyInput from './inputs/DummyInput';
+import { nutritionLogTypeDef } from './nutrition/nutrition';
 // Objects
-import DummyObject from './objects/DummyObject';
+import productTypeDef from './product/product';
 // Root types
 import Mutation from './root/Mutation'; // tslint:disable-line ordered-imports
 import Query from './root/Query'; // tslint:disable-line ordered-imports
 import userTypeDef from './user/user';
 
 const typeDefStrings = [
-  // Inputs
-  DummyInput,
-  // Objects
-  DummyObject,
   userTypeDef,
+  productTypeDef,
+  nutritionLogTypeDef,
   // queryTypeDefs,
   // Root types
   Mutation,

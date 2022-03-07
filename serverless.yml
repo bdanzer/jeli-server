@@ -25,11 +25,3 @@ functions:
           path: graphql
           method: get
           cors: true
-  test:
-    handler: src/handler.test
-    events:
-      - sqs: arn:aws:sqs:us-east-2:577813270602:TransactionQueue
-      - http:
-          path: test
-          method: get
-          cors: true

@@ -73,7 +73,7 @@ model Exercise {
 }
 
 model Product {
-  id              Int     @id @default(autoincrement())
+  id              Int    @id @default(autoincrement())
   name            String
   brand           String
   calories        Float
@@ -85,7 +85,6 @@ model Product {
   productType     String
   servingSize     Float
   servings        Float
-  amazonAffiliate String?
 
   //General
   createdAt DateTime  @default(now())
@@ -121,8 +120,8 @@ model NutritionLog {
 }
 
 model NutritionLogTemplate {
-  id                Int           @id @default(autoincrement())
-  nutritionLog      NutritionLog?
+  id                Int            @id @default(autoincrement())
+  nutritionLogs     NutritionLog[]
   templateStructure Json[]
 
   //Relations

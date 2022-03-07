@@ -1,6 +1,5 @@
 export default `
   type Mutation {
-    dummyMutation(input: DummyInput!): Boolean!
     searchNutritionBrand(query: String!): [DummyObject2!]
     googleSignIn(googleToken: String!): User!
     userSetup(
@@ -15,5 +14,22 @@ export default `
       preferredTheme: String, 
       preferredMetric: String!
     ): User!
+    addProduct(
+      name: String!
+      brand: String!
+      calories: Float!
+      carbs: Float!
+      fat: Float!
+      protein: Float!
+      dietType: String!
+      measurementType: String!
+      productType: String!
+      servingSize: Float!
+      servings: Float!
+    ): Product!
+    addNutritionLog(
+      loggedMeals: [LoggedMealInput!]
+      nutritionLogTemplateId: Int!
+    ): NutritionLog!
   }
 `;

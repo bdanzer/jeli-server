@@ -1,31 +1,59 @@
+import { NutritionLog, PrismaClient } from "@prisma/client";
+
+export const addNutritionLog = async (
+  _: any,
+  {
+    loggedMeals,
+    nutritionLogTemplateId
+  },
+  { googleClient, prismaClient, headers, setCookies, isUserAuthd }
+): Promise<NutritionLog> => {
+    console.log('USER AUTHD', isUserAuthd)
+    if (!isUserAuthd) {
+        throw new Error('USER UNAUTHORIZED');
+    }
+    const userId = isUserAuthd?.data?.id;
+
+    const nutritionLog = await (prismaClient as PrismaClient).nutritionLog.create({
+        data: {
+            loggedMeals: {},
+            nutritionLogTemplateId: 1,
+            userId
+        }
+    })
+
+    return nutritionLog;
+};
+
+
 const templates = [
     {
         id: 1,
         userId: 1,
         templateStructure: [
             {
-                templateOrder: 1,
-                name: "Meal 1"
+                "templateOrder": 1,
+                "name": "Meal 1"
             },
             {
-                templateOrder: 2,
-                name: "Snack 1"
+                "templateOrder": 2,
+                "name": "Snack 1"
             },
             {
-                templateOrder: 3,
-                name: "Meal 2"
+                "templateOrder": 3,
+                "name": "Meal 2"
             },
             {
-                templateOrder: 4,
-                name: "Snack 2"
+                "templateOrder": 4,
+                "name": "Snack 2"
             },
             {
-                templateOrder: 5,
-                name: "Meal 3"
+                "templateOrder": 5,
+                "name": "Meal 3"
             },
             {
-                templateOrder: 6,
-                name: "Snack 3"
+                "templateOrder": 6,
+                "name": "Snack 3"
             }
         ]
     }
@@ -37,10 +65,10 @@ const nutritionLog = {
     userId: 1,
     loggedMeals: [
         {
-            templateId: 1,
             templateOrder: 1,
             products: [
                 {
+                    id: '',
                     name: '',
                     calories: '',
                     fat: ''

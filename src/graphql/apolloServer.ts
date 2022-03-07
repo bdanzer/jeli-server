@@ -7,6 +7,9 @@ import httpHeadersPlugin from "apollo-server-plugin-http-headers";
 import cookie from 'cookie'
 import jwt from 'jsonwebtoken'
 import { PrismaClient } from '@prisma/client';
+import typeDefs from "./type-defs";
+import * as queries from "../graphql/resolvers/queries";
+import * as mutations from "../graphql/resolvers/mutations";
 
 const NODE_ENV = process.env.NODE_ENV;
 const GoogleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
@@ -14,21 +17,14 @@ const GoogleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 const IS_DEV = !NODE_ENV || !["production"].includes(NODE_ENV);
 console.log('ISDEV', IS_DEV);
 
-let dbConnect;
-const dbName = "jeli";
-const dbPass = "m9xzHnTZQN6YbLY8";
-
-dbConnect = {
-  dev: `mongodb://127.0.0.1:27017/${dbName}`,
-  stag: `mongodb+srv://bdanzer:${dbPass}@jeli.zxqj5.mongodb.net/${dbName}`,
-};
-
 const env = "dev";
-
-console.log(dbConnect);
-
-const connectDb = () => mongoose.connect(dbConnect[env]);
 const prismaClient = new PrismaClient();
+
+
+const resolvers = {
+  Mutation: mutations,
+  Query: queries,
+};
 
 export default async (event, context, callback) => {
   // await connectDb()
@@ -36,7 +32,8 @@ export default async (event, context, callback) => {
   const apolloServer = new ApolloServer({
     // subscriptions: {},
     introspection: true,
-    schema: graphqlSchemas,
+    typeDefs,
+    resolvers,
     plugins: [httpHeadersPlugin],
     context: async ({ event, context, express }) => {
       const headers = event.headers
