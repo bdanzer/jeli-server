@@ -2,10 +2,10 @@ const passport = require("passport");
 module.exports.resolvers = {
   Query: {},
   Mutation: {
-    searchNutritionBrand: async (_, { query }, { dataSources }) => {
-      const nutrition = await dataSources.nutrition.searchBrand({ query });
-      return nutrition;
-    },
+    // searchNutritionBrand: async (_, { query }, { dataSources }) => {
+    //   const nutrition = await dataSources.nutrition.searchBrand({ query });
+    //   return nutrition;
+    // },
     searchNutritionByNixId: async (_, { itemId }, { dataSources }) => {
       const nutritionItem = await dataSources.nutrition.searchByNixId({
         itemId,

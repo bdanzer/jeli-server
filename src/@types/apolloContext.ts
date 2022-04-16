@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 import { ExpressContext } from "apollo-server-express";
 import {
   APIGatewayEventRequestContext,
@@ -12,7 +12,9 @@ export interface ApolloContext {
   headers: {
     [key: string]: string;
   };
-  isUserAuthd: any;
+  isUserAuthd: {
+    data: User
+  };
   functionName: string;
   event: APIGatewayProxyEvent;
   context: APIGatewayEventRequestContext;

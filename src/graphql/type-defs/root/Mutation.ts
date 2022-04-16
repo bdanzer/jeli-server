@@ -1,6 +1,6 @@
+// searchNutritionBrand(query: String!): [DummyObject2!]
 export default `
   type Mutation {
-    searchNutritionBrand(query: String!): [DummyObject2!]
     googleSignIn(googleToken: String!): User!
     userSetup(
       role: String!, 

@@ -1,5 +1,6 @@
 import { NutritionLog } from "@prisma/client";
 import { ApolloContext } from "../../../@types/apolloContext";
+import moment from 'moment-timezone';
 
 export const addNutritionLog = async (
   _: any,
@@ -16,15 +17,46 @@ export const addNutritionLog = async (
   if (!isUserAuthd) {
     throw new Error("USER UNAUTHORIZED");
   }
-  const userId = isUserAuthd?.data?.id;
+  const userId = 1 || isUserAuthd?.data?.id;
 
-  const nutritionLog = await prismaClient.nutritionLog.create({
-    data: {
-      loggedMeals: {},
-      nutritionLogTemplateId: 1,
-      userId,
-    },
-  });
+  const endOfDay = moment().tz(isUserAuthd?.data?.timezone).endOf('day').format();
+  const startOfDay = moment().tz(isUserAuthd?.data?.timezone).startOf('day').format()
+  const date = moment().tz(isUserAuthd?.data?.timezone).format();
+
+  const log = await prismaClient.nutritionLog.findFirst({
+    where: {
+      updatedAt: {
+        gte: startOfDay,
+        lte:  endOfDay
+      }
+    }
+  })
+
+  let nutritionLog;
+
+  if (log) {
+    nutritionLog = await prismaClient.nutritionLog.update({
+      data: {
+        loggedMeals,
+        nutritionLogTemplateId: 1,
+        userId,
+        updatedAt: date
+      },
+      where: {
+        id: log.id
+      }
+    });
+  } else {
+    nutritionLog = await prismaClient.nutritionLog.create({
+      data: {
+        loggedMeals,
+        nutritionLogTemplateId: 1,
+        userId,
+        createdAt: date,
+        updatedAt: date
+      },
+    });
+  }
 
   return nutritionLog;
 };

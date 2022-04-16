@@ -13,15 +13,15 @@ export const nutritionLogTypeDef = `
     servings: Float!
   }
   input LoggedMealInput {
-    templateOrder: Int!
     products: [ProductInput!]
   }
   type LoggedMeal {
-    templateOrder: Int!
     products: [Product!]
   }
   type NutritionLog {
     loggedMeals: [LoggedMeal!]!
     nutritionLogTemplateId: Int!
+    updatedAt: String!
+    createdAt: String!
   }
 `;
