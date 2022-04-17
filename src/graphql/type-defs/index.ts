@@ -1,4 +1,5 @@
 import { gql } from "apollo-server-lambda";
+import { productFramentDef } from "./fragments/productFragment";
 
 import { nutritionLogTypeDef } from "./nutrition/nutrition";
 // Objects
@@ -9,6 +10,7 @@ import Query from "./root/Query"; // tslint:disable-line ordered-imports
 import userTypeDef from "./user/user";
 
 const typeDefStrings = [
+  productFramentDef,
   userTypeDef,
   productTypeDef,
   nutritionLogTypeDef,

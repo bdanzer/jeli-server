@@ -1,4 +1,4 @@
-import { NutritionLog } from "@prisma/client";
+import { Meal, NutritionLog } from "@prisma/client";
 import { ApolloContext } from "../../../@types/apolloContext";
 import moment from "moment-timezone";
 
@@ -41,3 +41,30 @@ export const getNutritionLog = async (
 
   return nutritionLog;
 };
+
+export const getMeals = async (
+  _: any,
+  { products, mealName },
+  {
+    googleClient,
+    prismaClient,
+    headers,
+    setCookies,
+    isUserAuthd,
+  }: ApolloContext
+): Promise<Meal[]> => {
+  console.log("USER AUTHD", isUserAuthd);
+  if (!isUserAuthd) {
+    throw new Error("USER UNAUTHORIZED");
+  }
+  const userId = 1 || isUserAuthd?.data?.id;
+
+  const meals = await prismaClient.meal.findMany({
+    where: {
+      userId
+    }
+  })
+
+  return meals
+};
+

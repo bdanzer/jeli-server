@@ -31,5 +31,9 @@ export default `
       loggedMeals: [LoggedMealInput!]
       nutritionLogTemplateId: Int!
     ): NutritionLog!
+    addMeal(
+      meal: [ProductInput!]!
+      mealName: String!
+    ): Meal!
   }
 `;

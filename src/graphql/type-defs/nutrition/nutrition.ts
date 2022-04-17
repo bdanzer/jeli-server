@@ -11,6 +11,7 @@ export const nutritionLogTypeDef = `
     productType: String!
     servingSize: Float!
     servings: Float!
+    modifier: Float!
   }
   input LoggedMealInput {
     products: [ProductInput!]
@@ -23,5 +24,9 @@ export const nutritionLogTypeDef = `
     nutritionLogTemplateId: Int!
     updatedAt: String!
     createdAt: String!
+  }
+  type Meal {
+    products: [ProductModifier!]!
+    name:     String!
   }
 `;
