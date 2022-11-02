@@ -1,0 +1,23 @@
+[
+  {
+    "workoutId": 1,
+    "workoutName": "Workout A",
+    "createdBy": {
+      "userId": 1,
+      "firstName": "Britt"
+    },
+    "workoutType": "warmUp",
+    "exerciseIds": [1, 2, 3, 4],
+    "isPublic": false
+  },
+  {
+    "workoutId": 2,
+    "workoutName": "Workout B",
+    "createdBy": {
+      "userId": 1,
+      "firstName": "Britt"
+    },
+    "exerciseIds": [1, 2, 3, 4],
+    "isPublic": false
+  }
+]
