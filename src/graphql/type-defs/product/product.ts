@@ -6,12 +6,10 @@ const productTypeDef = `
     carbs: Float!
     fat: Float!
     protein: Float!
-    dietType: String!
-    measurementType: String!
-    productType: String!
-    servingSize: Float!
+    measurementUnitType: String!
+    measurementValue: Float!
+    servingType: String!
     servings: Float!
-    modifier: Float!
   }
   type ProductModifier {
     name: String!
@@ -20,10 +18,9 @@ const productTypeDef = `
     carbs: Float!
     fat: Float!
     protein: Float!
-    dietType: String!
-    measurementType: String!
-    productType: String!
-    servingSize: Float!
+    measurementUnitType: String!
+    measurementValue: Float!
+    servingType: String!
     servings: Float!
     modifier: Float!
   }

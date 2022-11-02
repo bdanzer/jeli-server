@@ -32,6 +32,38 @@ export const getNutritionLog = async (
         gte: new Date(startOfDay),
         lte: new Date(endOfDay),
       },
+      userId: isUserAuthd.data.id
+    },
+  });
+
+  if (!nutritionLog) {
+    throw new Error("Nutrition log not found");
+  }
+
+  return nutritionLog;
+};
+
+export const getNutritionLogs = async (
+  _: any,
+  { addDays },
+  {
+    headers,
+    googleClient,
+    prismaClient,
+    isUserAuthd,
+    setCookies,
+  }: ApolloContext
+): Promise<NutritionLog[]> => {
+  if (!isUserAuthd?.data) {
+    throw new Error("User not Authorized");
+  }
+
+  // const endOfDay = moment().tz(userTimezone).add(addDays, 'day').endOf("day").format();
+  // const startOfDay = moment().tz(userTimezone).add(addDays, 'day').startOf("day").format();
+
+  const nutritionLog = prismaClient.nutritionLog.findMany({
+    where: {
+      userId: isUserAuthd.data.id
     },
   });
 

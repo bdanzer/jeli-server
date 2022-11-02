@@ -6,10 +6,9 @@ export const nutritionLogTypeDef = `
     carbs: Float!
     fat: Float!
     protein: Float!
-    dietType: String!
-    measurementType: String!
-    productType: String!
-    servingSize: Float!
+    measurementUnitType: String!
+    measurementValue: Float!
+    servingType: String!
     servings: Float!
     modifier: Float!
   }
@@ -17,7 +16,7 @@ export const nutritionLogTypeDef = `
     products: [ProductInput!]
   }
   type LoggedMeal {
-    products: [Product!]
+    products: [ProductModifier!]
   }
   type NutritionLog {
     loggedMeals: [LoggedMeal!]!
